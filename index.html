@@ -1162,7 +1162,7 @@ body{
         <div class="c-ch">
           <div class="c-ch-icon">📧</div>
           <div class="c-ch-label">Email</div>
-          <div class="c-ch-val">stratosconseils@gmail.com</div>
+          <div class="c-ch-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1b686f697a6f7468787475687e7277685b7c767a727735787476">[email&#160;protected]</a></div>
         </div>
         <div class="c-ch" onclick="window.open('https://www.instagram.com/stratosconseils?igsh=MW40dDJxenpndjlkeg%3D%3D&utm_source=qr','_blank')" style="cursor:pointer">
           <div class="c-ch-icon">📷</div>
@@ -1431,7 +1431,7 @@ body{
         SIRET : [À compléter]<br>
         RCS Paris : [À compléter]<br>
         N° TVA intracommunautaire : [À compléter]<br>
-        Email : stratosconseils@gmail.com<br>
+        Email : <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="770403051603180414181904121e1b0437101a161e1b5914181a">[email&#160;protected]</a><br>
         Directeur de la publication : [Prénom Nom]
       </div>
 
@@ -1483,7 +1483,7 @@ body{
       <div class="info-block">
         <strong>Stratos Conseils</strong> — [Forme juridique]<br>
         Siège social : [Adresse complète, Paris]<br>
-        Email DPO / contact RGPD : <strong>stratosconseils@gmail.com</strong><br>
+        Email DPO / contact RGPD : <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b6c5c2c4d7c2d9c5d5d9d8c5d3dfdac5f6d1dbd7dfda98d5d9db">[email&#160;protected]</a></strong><br>
         SIRET : [À compléter]
       </div>
 
@@ -1534,7 +1534,7 @@ body{
         <li><strong>Droit d'opposition</strong> (art. 21) — vous opposer à un traitement fondé sur l'intérêt légitime</li>
         <li><strong>Droit de ne pas faire l'objet d'une décision automatisée</strong> (art. 22)</li>
       </ul>
-      <p>Pour exercer ces droits, adressez votre demande à : <strong>stratosconseils@gmail.com</strong> en joignant un justificatif d'identité. Nous vous répondons dans un délai maximum d'<strong>un mois</strong> (art. 12 RGPD), prorogeable à trois mois en cas de demande complexe.</p>
+      <p>Pour exercer ces droits, adressez votre demande à : <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7407000615001b07171b1a07111d1807341319151d185a171b19">[email&#160;protected]</a></strong> en joignant un justificatif d'identité. Nous vous répondons dans un délai maximum d'<strong>un mois</strong> (art. 12 RGPD), prorogeable à trois mois en cas de demande complexe.</p>
       <p>En cas de réclamation non résolue, vous avez le droit de saisir la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) : 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07 — <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
 
       <h2>7. Sécurité des données</h2>
@@ -1623,11 +1623,7 @@ body{
 
       <h2>Article 10 — Confidentialité et secret professionnel</h2>
       <p>Stratos Conseils s'astreint à la plus stricte confidentialité sur l'ensemble des informations, données stratégiques, politiques ou commerciales communiquées par le client dans le cadre de la mission. Cette obligation s'applique pendant toute la durée du contrat et pour une période de <strong>5 ans</strong> après son terme, sans limite en cas d'information couverte par le secret des affaires.</p>
-      <p>Un accord de confidentialité (NDA) spécifique peut être signé à la demande de l'une ou l'autre des parties préalablement à tout échange d'informations sensibles.</p>
-      <p>La même obligation de confidentialité s'impose au client s'agissant des méthodes, outils, recommandations et documents de travail produits par Stratos Conseils.</p>
-
-      <h2>Article 11 — Propriété des livrables</h2>
-      <p>Les livrables produits dans le cadre d'une mission (discours, notes stratégiques, rapports d'analyse, plans de communication, éléments de langage, dossiers d'appels d'offres) sont réalisés pour le compte exclusif du client.</p>
+      <p>Un accord de confidentialité (NDA) spécifique peut être signé à la demande de l'une ou l'autre des le compte exclusif du client.</p>
       <p>La propriété intellectuelle et les droits d'usage des livrables sont transférés au client après <strong>paiement intégral</strong> des honoraires correspondants. En cas de non-paiement, Stratos Conseils conserve l'intégralité des droits sur les travaux produits.</p>
       <p>Stratos Conseils conserve le droit de mentionner l'existence de la mission dans ses références commerciales, sous forme <strong>strictement anonymisée</strong> et avec l'accord préalable du client.</p>
 
@@ -1681,4 +1677,17 @@ document.addEventListener('keydown',e=>{
     });
   }
 });
-document.querySele
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+    l.classList.add('active');
+  });
+});
+document.querySelector('.btn-form').addEventListener('click',function(){
+  this.textContent='✓ Demande envoyée — Réponse sous 24h';
+  this.style.background='#1a7a3f';
+  setTimeout(()=>{this.textContent='Envoyer ma demande →';this.style.background='';},3500);
+});
+</script>
+</body>
+</html>
