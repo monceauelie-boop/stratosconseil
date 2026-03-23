@@ -1162,12 +1162,12 @@ body{
         <div class="c-ch" onclick="window.location.href='mailto:stratosconseils@gmail.com'" style="cursor:pointer">
           <div class="c-ch-icon">📧</div>
           <div class="c-ch-label">Email général</div>
-          <div class="c-ch-val">stratosconseils@gmail.com</div>
+          <div class="c-ch-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5d6d1d7c4d1cad6c6cacbd6c0ccc9d6e5c2c8c4ccc98bc6cac8">[email&#160;protected]</a></div>
         </div>
         <div class="c-ch" onclick="window.location.href='mailto:stratosconseil@proton.me'" style="cursor:pointer;border-color:var(--or-b)">
           <div class="c-ch-icon">🔒</div>
           <div class="c-ch-label" style="color:var(--or)">Email sécurisé — Missions confidentielles</div>
-          <div class="c-ch-val">stratosconseil@proton.me</div>
+          <div class="c-ch-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="176463657663786474787964727e7b57676578637879397a72">[email&#160;protected]</a></div>
         </div>
         <div class="c-ch" onclick="window.open('https://www.instagram.com/stratosconseils?igsh=MW40dDJxenpndjlkeg%3D%3D&utm_source=qr','_blank')" style="cursor:pointer">
           <div class="c-ch-icon">📷</div>
@@ -1194,27 +1194,28 @@ body{
         <span style="width:5px;height:5px;border-radius:50%;background:var(--rouge-v);display:inline-block;animation:blink 1.4s infinite"></span>
         Consultation gratuite — 30 minutes
       </div>
+      <form id="contact-form" action="https://formspree.io/f/mreywwbj" method="POST">
       <div class="form-2col form-row">
         <div>
           <label class="form-label">Prénom *</label>
-          <input type="text" class="form-input" placeholder="Jean">
+          <input type="text" name="prenom" class="form-input" placeholder="Jean" required>
         </div>
         <div>
           <label class="form-label">Nom *</label>
-          <input type="text" class="form-input" placeholder="Dupont">
+          <input type="text" name="nom" class="form-input" placeholder="Dupont" required>
         </div>
       </div>
       <div class="form-row">
         <label class="form-label">Email *</label>
-        <input type="email" class="form-input" placeholder="jean@exemple.fr">
+        <input type="email" name="email" class="form-input" placeholder="jean@exemple.fr" required>
       </div>
       <div class="form-row">
         <label class="form-label">Organisation / Parti / Entreprise</label>
-        <input type="text" class="form-input" placeholder="Optionnel">
+        <input type="text" name="organisation" class="form-input" placeholder="Optionnel">
       </div>
       <div class="form-row">
         <label class="form-label">Type de mission *</label>
-        <select class="form-select">
+        <select name="mission" class="form-select" required>
           <option value="">— Sélectionner —</option>
           <option>Conseil stratégique politique</option>
           <option>Gestion de campagne électorale</option>
@@ -1230,9 +1231,10 @@ body{
       </div>
       <div class="form-row">
         <label class="form-label">Votre message</label>
-        <textarea class="form-textarea" placeholder="Décrivez brièvement votre contexte et vos objectifs..."></textarea>
+        <textarea name="message" class="form-textarea" placeholder="Décrivez brièvement votre contexte et vos objectifs..."></textarea>
       </div>
-      <button class="btn-form">Envoyer ma demande →</button>
+      <button type="submit" class="btn-form" id="btn-form-submit">Envoyer ma demande →</button>
+      </form>
       <div class="form-note">Réponse garantie sous 24h · Échange strictement confidentiel</div>
     </div>
   </div>
@@ -1436,7 +1438,7 @@ body{
         SIRET : [À compléter]<br>
         RCS Paris : [À compléter]<br>
         N° TVA intracommunautaire : [À compléter]<br>
-        Email : <a href="mailto:stratosconseils@gmail.com" style="color:var(--bleu-v)">stratosconseils@gmail.com</a><br>
+        Email : <a href="/cdn-cgi/l/email-protection#c6b5b2b4a7b2a9b5a5a9a8b5a3afaab586a1aba7afaae8a5a9ab" style="color:var(--bleu-v)"><span class="__cf_email__" data-cfemail="8cfff8feedf8e3ffefe3e2ffe9e5e0ffccebe1ede5e0a2efe3e1">[email&#160;protected]</span></a><br>
         Directeur de la publication : [Prénom Nom]
       </div>
 
@@ -1488,7 +1490,7 @@ body{
       <div class="info-block">
         <strong>Stratos Conseils</strong> — [Forme juridique]<br>
         Siège social : [Adresse complète, Paris]<br>
-        Email DPO / contact RGPD : <strong><a href="mailto:stratosconseils@gmail.com" style="color:var(--bleu-v)">stratosconseils@gmail.com</a></strong><br>
+        Email DPO / contact RGPD : <strong><a href="/cdn-cgi/l/email-protection#93e0e7e1f2e7fce0f0fcfde0f6faffe0d3f4fef2faffbdf0fcfe" style="color:var(--bleu-v)"><span class="__cf_email__" data-cfemail="1a696e687b6e7569797574697f7376695a7d777b737634797577">[email&#160;protected]</span></a></strong><br>
         SIRET : [À compléter]
       </div>
 
@@ -1539,7 +1541,7 @@ body{
         <li><strong>Droit d'opposition</strong> (art. 21) — vous opposer à un traitement fondé sur l'intérêt légitime</li>
         <li><strong>Droit de ne pas faire l'objet d'une décision automatisée</strong> (art. 22)</li>
       </ul>
-      <p>Pour exercer ces droits, adressez votre demande à : <strong><a href="mailto:stratosconseils@gmail.com" style="color:var(--bleu-v)">stratosconseils@gmail.com</a></strong> en joignant un justificatif d'identité. Nous vous répondons dans un délai maximum d'<strong>un mois</strong> (art. 12 RGPD), prorogeable à trois mois en cas de demande complexe.</p>
+      <p>Pour exercer ces droits, adressez votre demande à : <strong><a href="/cdn-cgi/l/email-protection#87f4f3f5e6f3e8f4e4e8e9f4e2eeebf4c7e0eae6eeeba9e4e8ea" style="color:var(--bleu-v)"><span class="__cf_email__" data-cfemail="1360676172677c60707c7d60767a7f6053747e727a7f3d707c7e">[email&#160;protected]</span></a></strong> en joignant un justificatif d'identité. Nous vous répondons dans un délai maximum d'<strong>un mois</strong> (art. 12 RGPD), prorogeable à trois mois en cas de demande complexe.</p>
       <p>En cas de réclamation non résolue, vous avez le droit de saisir la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) : 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07 — <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
 
       <h2>7. Sécurité des données</h2>
@@ -1658,7 +1660,7 @@ body{
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function scroll_to(id){
   const el=document.getElementById(id);
   if(el){el.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -1688,11 +1690,39 @@ document.querySelectorAll('.nav-link').forEach(l=>{
     l.classList.add('active');
   });
 });
-document.querySelector('.btn-form').addEventListener('click',function(){
-  this.textContent='✓ Demande envoyée — Réponse sous 24h';
-  this.style.background='#1a7a3f';
-  setTimeout(()=>{this.textContent='Envoyer ma demande →';this.style.background='';},3500);
-});
+
+// Formspree AJAX submission
+const form = document.getElementById('contact-form');
+const btn  = document.getElementById('btn-form-submit');
+if(form){
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    btn.textContent = 'Envoi en cours...';
+    btn.disabled = true;
+    btn.style.background = '#555';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if(res.ok){
+        btn.textContent = '✓ Message envoyé — Réponse sous 24h';
+        btn.style.background = '#1a7a3f';
+        btn.style.color = '#fff';
+        form.reset();
+      } else {
+        btn.textContent = '✗ Erreur — Réessayez ou écrivez directement';
+        btn.style.background = 'var(--rouge-v)';
+        btn.disabled = false;
+      }
+    } catch(err){
+      btn.textContent = '✗ Erreur réseau — Réessayez';
+      btn.style.background = 'var(--rouge-v)';
+      btn.disabled = false;
+    }
+  });
+}
 </script>
 </body>
 </html>
