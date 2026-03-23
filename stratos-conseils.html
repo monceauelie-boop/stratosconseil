@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stratos Conseils — Cabinet de Conseil Stratégique & Politique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #050c1a;
+  --s1:      #070e1e;
+  --s2:      #0a1222;
+  --s3:      #0e1828;
+  --s4:      #121e32;
+  --rule:    rgba(255,255,255,.07);
+  --rule2:   rgba(255,255,255,.13);
+
+  --blanc:   #dde4f0;
+  --b80:     rgba(221,228,240,.8);
+  --b55:     rgba(221,228,240,.55);
+  --b30:     rgba(221,228,240,.3);
+  --b12:     rgba(221,228,240,.07);
+
+  --rouge:   #c8102e;
+  --rouge-v: #e8132e;
+  --rouge-glow: rgba(232,19,46,.35);
+  --bleu:    #1a3a8f;
+  --bleu-v:  #2550c0;
+  --bleu-pale: rgba(37,80,192,.18);
+  --or:      #c9a44a;
+  --or-dim:  rgba(201,164,74,.15);
+  --or-b:    rgba(201,164,74,.45);
+
+  --ft-logo: 'Rajdhani', sans-serif;
+  --ft-serif:'Libre Baskerville', Georgia, serif;
+  --ft-sans: 'DM Sans', sans-serif;
+  --ft-mono: 'DM Mono', monospace;
+
+  --max: 1100px;
+  --tr:  .16s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--blanc);
+  font-family:var(--ft-sans);font-size:14px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:linear-gradient(90deg,var(--bleu) 0%,#1a2f6a 100%);
+  padding:5px 20px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--ft-mono);font-size:11px;color:rgba(255,255,255,.5);
+  gap:10px;flex-wrap:wrap;
+}
+.topbar strong{color:rgba(255,255,255,.85)}
+.tb-tag{
+  background:var(--rouge-v);color:#fff;
+  padding:2px 8px;font-size:9px;font-weight:500;letter-spacing:.12em;
+}
+
+/* ── NAV ── */
+.nav{
+  background:rgba(7,14,30,.92);
+  border-bottom:1px solid var(--rule);
+  padding:0 20px;display:flex;align-items:center;
+  height:62px;position:sticky;top:0;z-index:200;
+  backdrop-filter:blur(16px);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:4px;
+  padding-right:22px;border-right:1px solid var(--rule);
+  margin-right:20px;flex-shrink:0;cursor:pointer;
+  text-decoration:none;
+}
+.logo-container{display:flex;align-items:center;gap:0;line-height:1}
+.logo-letter{
+  font-family:var(--ft-logo);font-size:20px;font-weight:700;
+  letter-spacing:.06em;color:var(--blanc);text-transform:uppercase;
+  text-shadow:0 1px 3px rgba(0,0,0,.6), 0 -1px 1px rgba(255,255,255,.06);
+}
+.logo-O-wrap{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;margin:0 1px;
+}
+.logo-O-wrap .logo-letter{position:relative;z-index:2}
+.logo-O-ring{
+  position:absolute;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--rouge-v);
+  box-shadow:0 0 6px var(--rouge-glow), 0 0 14px rgba(232,19,46,.2), inset 0 0 4px rgba(232,19,46,.15);
+  animation:ring-pulse 3s ease-in-out infinite;
+}
+@keyframes ring-pulse{
+  0%,100%{box-shadow:0 0 6px var(--rouge-glow),0 0 14px rgba(232,19,46,.2),inset 0 0 4px rgba(232,19,46,.15)}
+  50%{box-shadow:0 0 10px var(--rouge-glow),0 0 24px rgba(232,19,46,.35),inset 0 0 6px rgba(232,19,46,.25)}
+}
+.logo-sub{
+  font-family:var(--ft-mono);font-size:7px;letter-spacing:.1em;
+  color:var(--b30);text-transform:uppercase;margin-top:-2px;display:block;
+}
+.logo-conseils{
+  font-family:var(--ft-mono);font-size:8px;letter-spacing:.18em;
+  color:var(--or);text-transform:uppercase;margin-top:1px;display:block;
+}
+.nav-logo-wrap{display:flex;flex-direction:column;gap:0}
+
+.nav-links{
+  display:flex;flex:1;overflow-x:auto;scrollbar-width:none;
+}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  font-family:var(--ft-sans);font-size:12px;font-weight:500;
+  color:var(--b30);padding:0 13px;height:62px;
+  display:flex;align-items:center;gap:4px;
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:var(--tr);white-space:nowrap;letter-spacing:.01em;
+}
+.nav-link:hover{color:var(--b55)}
+.nav-link.active{color:var(--blanc);border-bottom-color:var(--rouge-v)}
+
+.nav-cta{
+  display:flex;gap:8px;margin-left:auto;padding-left:14px;flex-shrink:0;
+}
+.btn-ghost{
+  padding:6px 14px;border:1px solid var(--rule2);background:transparent;
+  color:var(--b55);font-family:var(--ft-sans);font-size:12px;font-weight:500;
+  cursor:pointer;transition:var(--tr);white-space:nowrap;
+}
+.btn-ghost:hover{border-color:var(--b30);color:var(--blanc)}
+.btn-rouge{
+  padding:7px 18px;border:none;background:var(--rouge-v);color:#fff;
+  font-family:var(--ft-sans);font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;transition:var(--tr);letter-spacing:.02em;
+}
+.btn-rouge:hover{background:#c8102e}
+.btn-or{
+  padding:7px 18px;border:none;background:var(--or);color:#06090e;
+  font-family:var(--ft-sans);font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;letter-spacing:.02em;
+}
+.nav-ham{
+  display:none;flex-direction:column;gap:5px;
+  cursor:pointer;padding:6px;margin-left:8px;
+}
+.nav-ham span{display:block;width:20px;height:1px;background:var(--b55)}
+
+/* ── HERO SECTION ── */
+.hero-wrap{
+  position:relative;overflow:hidden;
+  border-bottom:1px solid var(--rule);
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 800px 500px at 70% 50%, rgba(37,80,192,.12) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 15% 80%, rgba(232,19,46,.07) 0%, transparent 60%),
+    linear-gradient(180deg, var(--s1) 0%, var(--bg) 100%);
+  pointer-events:none;
+}
+.hero-grid-lines{
+  position:absolute;inset:0;pointer-events:none;opacity:.04;
+  background-image:
+    linear-gradient(var(--blanc) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blanc) 1px, transparent 1px);
+  background-size:40px 40px;
+  mask-image:linear-gradient(180deg,transparent,rgba(0,0,0,.6) 30%,rgba(0,0,0,.6) 70%,transparent);
+}
+.hero{
+  max-width:var(--max);margin:0 auto;padding:80px 20px 72px;
+  display:grid;grid-template-columns:1fr 380px;gap:60px;
+  position:relative;z-index:1;
+}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.ey-tag{
+  font-family:var(--ft-mono);font-size:9px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--or-b);color:var(--or);padding:2px 8px;
+}
+.ey-sep{color:var(--rule2)}
+.ey-sub{font-family:var(--ft-mono);font-size:9px;color:var(--b30);letter-spacing:.06em}
+.hero-title{
+  font-family:var(--ft-serif);
+  font-size:clamp(28px,4vw,50px);
+  font-weight:700;line-height:1.07;margin-bottom:16px;
+}
+.hero-title em{color:var(--rouge-v);font-style:italic}
+.hero-title .or{color:var(--or)}
+.hero-desc{
+  font-size:15px;color:var(--b55);max-width:500px;
+  line-height:1.75;margin-bottom:32px;
+}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px}
+.btn-hero-main{
+  padding:13px 28px;border:none;background:var(--rouge-v);color:#fff;
+  font-family:var(--ft-sans);font-size:14px;font-weight:700;
+  cursor:pointer;transition:var(--tr);letter-spacing:.02em;
+  display:flex;align-items:center;gap:8px;
+}
+.btn-hero-main:hover{background:#c8102e;transform:translateY(-1px)}
+.btn-hero-sec{
+  padding:13px 24px;border:1px solid var(--rule2);background:transparent;
+  color:var(--b55);font-family:var(--ft-sans);font-size:14px;font-weight:500;
+  cursor:pointer;transition:var(--tr);
+}
+.btn-hero-sec:hover{border-color:var(--b30);color:var(--blanc)}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap}
+.h-stat{display:flex;flex-direction:column;gap:3px}
+.h-stat-n{
+  font-family:var(--ft-serif);font-size:26px;font-weight:700;
+  color:var(--or);line-height:1;
+}
+.h-stat-l{font-family:var(--ft-mono);font-size:10px;color:var(--b30);letter-spacing:.08em}
+
+.hero-card{
+  background:var(--s2);border:1px solid var(--rule2);
+  border-top:2px solid var(--rouge-v);
+  padding:28px 24px;align-self:center;
+}
+.hc-label{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--rouge-v);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.hc-label::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--rouge-v);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hc-title{font-family:var(--ft-serif);font-size:18px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.hc-desc{font-size:13px;color:var(--b55);line-height:1.65;margin-bottom:20px}
+.hc-fields{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.hc-field{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;background:var(--s3);border:1px solid var(--rule);
+  font-size:12px;color:var(--b55);
+}
+.hc-field-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-r{background:var(--rouge-v)}
+.dot-b{background:var(--bleu-v)}
+.dot-o{background:var(--or)}
+.btn-full{
+  width:100%;padding:12px;border:none;background:var(--rouge-v);color:#fff;
+  font-family:var(--ft-sans);font-size:13px;font-weight:700;cursor:pointer;transition:var(--tr);
+}
+.btn-full:hover{background:#c8102e}
+.btn-full-or{
+  width:100%;padding:12px;border:none;background:var(--or);color:#06090e;
+  font-family:var(--ft-sans);font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;
+}
+.hc-note{font-family:var(--ft-mono);font-size:10px;color:var(--b30);text-align:center;margin-top:10px}
+
+/* ── SECTION HEADERS ── */
+.sec-wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+.sec-hdr{
+  display:flex;align-items:baseline;justify-content:space-between;
+  padding:52px 0 18px;border-bottom:1px solid var(--rule2);margin-bottom:0;
+}
+.sec-title{
+  font-family:var(--ft-logo);font-size:14px;font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--blanc);
+  display:flex;align-items:center;gap:10px;
+}
+.sec-badge{
+  font-family:var(--ft-mono);font-size:9px;color:var(--or);
+  border:1px solid var(--or-b);padding:1px 6px;letter-spacing:.08em;
+}
+.sec-badge-r{
+  font-family:var(--ft-mono);font-size:9px;color:var(--rouge-v);
+  border:1px solid rgba(232,19,46,.4);padding:1px 6px;letter-spacing:.08em;
+}
+.sec-sub{
+  font-size:14px;color:var(--b55);max-width:520px;line-height:1.7;
+  padding:18px 0 32px;
+}
+
+/* ── SERVICES GRID ── */
+.services-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin-bottom:1px;
+}
+/* Last row of 8 cards: 2 cards span wider to fill the 3-col grid */
+.serv-card.span2{grid-column:span 2}
+.serv-card{
+  background:var(--s1);padding:28px 24px;
+  transition:var(--tr);cursor:default;position:relative;overflow:hidden;
+}
+.serv-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(37,80,192,.06),transparent);
+  opacity:0;transition:var(--tr);
+}
+.serv-card:hover::before{opacity:1}
+.serv-card:hover{background:var(--s2)}
+.serv-num{
+  font-family:var(--ft-serif);font-size:32px;font-weight:700;
+  color:var(--rule2);line-height:1;margin-bottom:16px;
+}
+.serv-icon{font-size:24px;margin-bottom:12px}
+.serv-name{
+  font-family:var(--ft-serif);font-size:16px;font-weight:700;
+  line-height:1.2;margin-bottom:8px;
+}
+.serv-desc{font-size:12px;color:var(--b55);line-height:1.65;margin-bottom:16px}
+.serv-tags{display:flex;flex-wrap:wrap;gap:5px}
+.s-tag{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.06em;
+  border:1px solid var(--rule2);color:var(--b30);padding:2px 7px;
+}
+.serv-cta{
+  display:flex;align-items:center;gap:6px;margin-top:18px;
+  font-family:var(--ft-mono);font-size:10px;color:var(--rouge-v);
+  cursor:pointer;letter-spacing:.06em;transition:var(--tr);
+}
+.serv-cta:hover{color:var(--blanc)}
+
+/* FEATURED SERVICE */
+.serv-card.feat{background:linear-gradient(135deg,var(--s3),var(--s2));border:none}
+.serv-card.feat .serv-num{color:rgba(232,19,46,.2)}
+.serv-card.feat .serv-name{color:var(--blanc)}
+
+/* ── EXPERTISE BANNER ── */
+.expertise-band{
+  background:linear-gradient(135deg,var(--bleu) 0%,#1a2a6e 100%);
+  border-top:1px solid rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  padding:40px 0;margin:52px 0 0;
+}
+.exp-inner{
+  max-width:var(--max);margin:0 auto;padding:0 20px;
+  display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr 1px 1fr;gap:0;
+}
+.exp-sep{background:rgba(255,255,255,.1)}
+.exp-item{padding:8px 32px;text-align:center}
+.exp-item:first-child{padding-left:0;text-align:left}
+.exp-item:last-child{padding-right:0;text-align:right}
+.exp-num{
+  font-family:var(--ft-serif);font-size:36px;font-weight:700;
+  color:var(--or);line-height:1;margin-bottom:4px;
+}
+.exp-lbl{font-family:var(--ft-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+
+/* ── WHO SECTION ── */
+.who-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;
+  padding:40px 0 52px;align-items:start;
+  border-bottom:1px solid var(--rule);
+}
+.who-left{}
+.who-tag{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--rouge-v);margin-bottom:12px;
+}
+.who-title{
+  font-family:var(--ft-serif);font-size:clamp(20px,2.5vw,30px);
+  font-weight:700;line-height:1.15;margin-bottom:16px;
+}
+.who-desc{font-size:14px;color:var(--b55);line-height:1.75;margin-bottom:20px}
+.who-signature{
+  display:flex;align-items:center;gap:14px;
+  padding:16px;background:var(--s2);border:1px solid var(--rule);
+  border-left:3px solid var(--rouge-v);margin-top:24px;
+}
+.sig-av{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--bleu),var(--rouge));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ft-logo);font-size:18px;font-weight:700;color:#fff;
+  flex-shrink:0;
+}
+.sig-name{font-family:var(--ft-serif);font-size:15px;font-weight:700}
+.sig-role{font-family:var(--ft-mono);font-size:10px;color:var(--b30);letter-spacing:.06em;margin-top:2px}
+
+.who-right{}
+.comp-block{margin-bottom:24px}
+.comp-label{
+  font-family:var(--ft-mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--b30);margin-bottom:10px;
+}
+.comp-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;border:1px solid var(--rule);
+  background:var(--s1);margin-bottom:1px;
+  transition:var(--tr);cursor:default;
+}
+.comp-item:hover{background:var(--s2);border-color:var(--rule2)}
+.comp-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.comp-text{font-size:13px;font-weight:500;flex:1}
+.comp-level{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.06em;
+  color:var(--or);border:1px solid var(--or-b);padding:1px 6px;
+}
+
+/* ── PORTFOLIO ── */
+.portfolio-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;
+  padding:32px 0 52px;
+}
+.port-card{
+  background:var(--s2);border:1px solid var(--rule);
+  padding:24px;transition:var(--tr);cursor:pointer;position:relative;
+  overflow:hidden;
+}
+.port-card::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--rouge-v);transform:scaleY(0);transition:transform .2s ease;transform-origin:bottom;
+}
+.port-card:hover{border-color:var(--rule2);background:var(--s3)}
+.port-card:hover::after{transform:scaleY(1)}
+.port-cat{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--rouge-v);margin-bottom:10px;
+}
+.port-title{font-family:var(--ft-serif);font-size:16px;font-weight:700;line-height:1.3;margin-bottom:8px}
+.port-desc{font-size:12px;color:var(--b55);line-height:1.6;margin-bottom:14px}
+.port-footer{display:flex;align-items:center;justify-content:space-between}
+.port-tags{display:flex;gap:5px}
+.port-tag{font-family:var(--ft-mono);font-size:9px;color:var(--b30);border:1px solid var(--rule2);padding:2px 6px}
+.port-arrow{font-family:var(--ft-mono);font-size:11px;color:var(--b30);transition:var(--tr)}
+.port-card:hover .port-arrow{color:var(--blanc)}
+.port-card.conf{border-left:3px solid rgba(201,164,74,.3)}
+.conf-msg{
+  font-family:var(--ft-mono);font-size:9px;color:var(--or);
+  letter-spacing:.08em;margin-bottom:14px;
+}
+
+/* ── PROCESS ── */
+.process-strip{
+  background:var(--s1);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  padding:52px 0;
+}
+.process-inner{max-width:var(--max);margin:0 auto;padding:0 20px}
+.process-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);margin-top:32px;
+}
+.proc-step{background:var(--s2);padding:24px 20px;position:relative}
+.proc-num{
+  font-family:var(--ft-serif);font-size:40px;font-weight:700;
+  color:rgba(37,80,192,.25);line-height:1;margin-bottom:12px;
+}
+.proc-title{font-family:var(--ft-serif);font-size:14px;font-weight:700;margin-bottom:6px}
+.proc-desc{font-size:12px;color:var(--b55);line-height:1.6}
+.proc-arrow{
+  position:absolute;top:50%;right:-10px;
+  transform:translateY(-50%);
+  font-size:10px;color:var(--b30);z-index:2;
+}
+
+/* ── TESTIMONIALS ── */
+.testi-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--rule);border:1px solid var(--rule);
+  margin:32px 0 52px;
+}
+.testi-card{background:var(--s1);padding:24px}
+.testi-mark{
+  font-family:var(--ft-serif);font-size:40px;color:var(--rouge-v);
+  opacity:.3;line-height:1;margin-bottom:8px;
+}
+.testi-text{font-size:13px;color:var(--b55);line-height:1.7;margin-bottom:16px;font-style:italic}
+.testi-name{font-size:12px;font-weight:600;color:var(--blanc)}
+.testi-role{font-family:var(--ft-mono);font-size:10px;color:var(--b30);letter-spacing:.04em;margin-top:1px}
+.testi-conf{font-family:var(--ft-mono);font-size:8px;color:var(--or);letter-spacing:.1em;margin-top:4px}
+
+/* ── CONTACT / CTA FINAL ── */
+.cta-final{
+  background:linear-gradient(135deg,var(--s2),var(--s3));
+  border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule);
+  padding:64px 0;
+}
+.cta-inner{
+  max-width:760px;margin:0 auto;padding:0 20px;text-align:center;
+}
+.cta-tag{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--or);margin-bottom:14px;display:block;
+}
+.cta-title{
+  font-family:var(--ft-serif);font-size:clamp(22px,3vw,38px);
+  font-weight:700;line-height:1.1;margin-bottom:14px;
+}
+.cta-desc{font-size:14px;color:var(--b55);line-height:1.7;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.btn-cta-main{
+  padding:15px 36px;border:none;background:var(--rouge-v);color:#fff;
+  font-family:var(--ft-sans);font-size:15px;font-weight:700;
+  cursor:pointer;transition:var(--tr);letter-spacing:.02em;
+}
+.btn-cta-main:hover{background:#c8102e;transform:translateY(-2px)}
+.btn-cta-sec{
+  padding:15px 28px;border:1px solid var(--rule2);background:transparent;
+  color:var(--b55);font-family:var(--ft-sans);font-size:15px;font-weight:500;
+  cursor:pointer;transition:var(--tr);
+}
+.btn-cta-sec:hover{border-color:var(--b30);color:var(--blanc)}
+.cta-note{font-family:var(--ft-mono);font-size:10px;color:var(--b30);letter-spacing:.06em}
+
+/* ── CONTACT FORM STRIP ── */
+.contact-strip{background:var(--bg);padding:52px 0;border-bottom:1px solid var(--rule)}
+.contact-inner{
+  max-width:var(--max);margin:0 auto;padding:0 20px;
+  display:grid;grid-template-columns:1fr 1px 420px;gap:48px;
+}
+.contact-sep{background:var(--rule)}
+.contact-left{}
+.contact-lbl{font-family:var(--ft-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--b30);margin-bottom:8px}
+.contact-title{font-family:var(--ft-serif);font-size:clamp(20px,2.5vw,28px);font-weight:700;line-height:1.2;margin-bottom:14px}
+.contact-desc{font-size:13px;color:var(--b55);line-height:1.7;margin-bottom:28px}
+.contact-channels{display:flex;flex-direction:column;gap:8px}
+.c-ch{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;background:var(--s2);border:1px solid var(--rule);
+  transition:var(--tr);cursor:pointer;
+}
+.c-ch:hover{border-color:var(--rule2);background:var(--s3)}
+.c-ch-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.c-ch-label{font-size:13px;font-weight:500}
+.c-ch-val{font-family:var(--ft-mono);font-size:11px;color:var(--b30);margin-left:auto}
+
+.contact-right{}
+.form-row{margin-bottom:12px}
+.form-label{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--b30);display:block;margin-bottom:5px;
+}
+.form-input,
+.form-select,
+.form-textarea{
+  width:100%;padding:10px 12px;
+  background:var(--s2);border:1px solid var(--rule2);
+  color:var(--blanc);font-family:var(--ft-sans);font-size:13px;
+  outline:none;transition:var(--tr);appearance:none;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--bleu-v);background:var(--s3);
+}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.6}
+.form-select{cursor:pointer}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-form{
+  width:100%;padding:12px;border:none;background:var(--rouge-v);color:#fff;
+  font-family:var(--ft-sans);font-size:14px;font-weight:700;
+  cursor:pointer;transition:var(--tr);margin-top:4px;
+}
+.btn-form:hover{background:#c8102e}
+.form-note{font-family:var(--ft-mono);font-size:10px;color:var(--b30);margin-top:8px;text-align:center}
+
+/* ── FOOTER ── */
+.footer-top{
+  background:var(--s1);border-top:1px solid var(--rule2);
+  padding:36px 20px 24px;
+}
+.footer-top-inner{
+  max-width:var(--max);margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px;
+}
+.ft-col-title{
+  font-family:var(--ft-logo);font-size:11px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--b30);
+  margin-bottom:12px;
+}
+.ft-link{
+  display:block;font-size:12px;color:var(--b55);
+  margin-bottom:7px;cursor:pointer;transition:var(--tr);text-decoration:none;
+}
+.ft-link:hover{color:var(--blanc)}
+.footer-logo-wrap{margin-bottom:10px}
+.footer-desc{font-size:12px;color:var(--b30);line-height:1.65;margin-bottom:14px}
+.footer-soc{display:flex;gap:8px}
+.soc-btn{
+  width:30px;height:30px;border:1px solid var(--rule2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;cursor:pointer;transition:var(--tr);color:var(--b30);
+}
+.soc-btn:hover{border-color:var(--b30);color:var(--blanc)}
+
+.footer-bottom{
+  background:var(--s1);border-top:1px solid var(--rule);
+  padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.footer-bottom-inner{
+  max-width:var(--max);margin:0 auto;width:100%;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.footer-logo-sm{
+  font-family:var(--ft-logo);font-size:13px;font-weight:700;
+  letter-spacing:.16em;color:var(--b55);text-transform:uppercase;
+}
+.footer-links{display:flex;gap:14px;flex-wrap:wrap}
+.footer-link{font-family:var(--ft-mono);font-size:10px;color:var(--b30);cursor:pointer;transition:var(--tr)}
+.footer-link:hover{color:var(--blanc)}
+.footer-legal{margin-left:auto;font-family:var(--ft-mono);font-size:10px;color:var(--b30)}
+
+/* ── STICKY CTA BAR (mobile) ── */
+.sticky-bar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:var(--s1);border-top:1px solid var(--rule2);
+  padding:10px 16px;gap:10px;
+}
+
+/* ── TICKER ── */
+.ticker{
+  background:var(--s1);border-bottom:1px solid var(--rule);
+  padding:6px 0;overflow:hidden;white-space:nowrap;position:relative;
+}
+.ticker-lbl{
+  position:absolute;left:0;top:0;bottom:0;z-index:3;
+  background:var(--s3);display:flex;align-items:center;padding:0 14px;
+  font-family:var(--ft-logo);font-size:11px;font-weight:600;
+  letter-spacing:.2em;color:var(--b30);
+}
+.ticker-lbl::after{content:'';position:absolute;right:-10px;top:0;bottom:0;width:10px;background:linear-gradient(90deg,var(--s3),transparent)}
+.ticker-fade{position:absolute;right:0;top:0;bottom:0;width:50px;background:linear-gradient(-90deg,var(--s1),transparent);z-index:2}
+.ticker-inner{
+  display:inline-block;padding-left:110px;
+  animation:tscroll 55s linear infinite;
+  font-family:var(--ft-mono);font-size:11px;color:var(--b30);letter-spacing:.03em;
+}
+.ticker-inner .sep{color:var(--rule2);margin:0 12px}
+@keyframes tscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;gap:28px}
+  .services-grid{grid-template-columns:1fr}
+  .serv-card.span2{grid-column:span 1}
+  .exp-inner{grid-template-columns:1fr 1fr;gap:0}
+  .exp-sep{display:none}
+  .exp-item{padding:14px 16px;text-align:left}
+  .exp-item:last-child{text-align:left}
+  .who-grid{grid-template-columns:1fr;gap:28px}
+  .portfolio-grid{grid-template-columns:1fr}
+  .process-grid{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .contact-inner{grid-template-columns:1fr;gap:32px}
+  .contact-sep{display:none}
+  .footer-top-inner{grid-template-columns:1fr 1fr;gap:24px}
+  .nav-links{display:none}
+  .nav-ham{display:flex}
+  .btn-ghost{display:none}
+  .sticky-bar{display:flex}
+}
+@media(max-width:600px){
+  .topbar{display:none}
+  .hero{padding:36px 16px 36px}
+  .sec-wrap{padding:0 16px}
+  .hero-stats{gap:20px}
+  .expertise-band{padding:28px 0}
+  .exp-inner{grid-template-columns:1fr 1fr}
+  .process-grid{grid-template-columns:1fr}
+  .footer-top-inner{grid-template-columns:1fr}
+  .form-2col{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+    <span class="tb-tag">Cabinet Conseil</span>
+    <strong>Stratos Conseils</strong> — Stratégie politique & géopolitique · Paris
+  </div>
+  <div style="font-family:var(--ft-mono);font-size:11px;color:rgba(255,255,255,.4)">
+    Conseil · Campagnes · Communication politique
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-wrap">
+      <div class="logo-container">
+        <span class="logo-letter">STRAT</span>
+        <span class="logo-O-wrap">
+          <span class="logo-letter" style="position:relative;z-index:2">O</span>
+          <span class="logo-O-ring"></span>
+        </span>
+        <span class="logo-letter">S</span>
+      </div>
+      <span class="logo-conseils">Conseils</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <div class="nav-link active" onclick="scroll_to('services')">Services</div>
+    <div class="nav-link" onclick="scroll_to('expertise')">Expertise</div>
+    <div class="nav-link" onclick="scroll_to('portfolio')">Portfolio</div>
+    <div class="nav-link" onclick="scroll_to('contact')">Contact</div>
+    <div class="nav-link" onclick="window.open('https://stratos.fr','_blank')">Stratos Média ↗</div>
+  </div>
+  <div class="nav-cta">
+    <button class="btn-ghost" onclick="scroll_to('contact')">Nous écrire</button>
+    <button class="btn-rouge" onclick="scroll_to('contact')">Consultation gratuite →</button>
+  </div>
+  <div class="nav-ham"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-lbl">Stratos</div>
+  <div class="ticker-fade"></div>
+  <div class="ticker-inner">
+    Conseil stratégique · Campagnes électorales · Communication politique · Gestion de crise · Intelligence géopolitique
+    <span class="sep">·</span> Rédaction de discours · Speechwriting politique
+    <span class="sep">·</span> Marchés publics · Contrats gouvernementaux · Investissement international
+    <span class="sep">·</span> Présidentielle 2027 · Accompagnement candidats et partis
+    <span class="sep">·</span> Europe · Lobbying institutionnel · Affaires publiques
+    <span class="sep">·</span> Suivez-nous · Instagram @stratosconseils · X @stratosconseils
+    <span class="sep">·</span> Conseil stratégique · Campagnes électorales · Communication politique · Gestion de crise · Intelligence géopolitique
+    <span class="sep">·</span> Rédaction de discours · Speechwriting politique
+    <span class="sep">·</span> Marchés publics · Contrats gouvernementaux · Investissement international
+    <span class="sep">·</span> Présidentielle 2027 · Accompagnement candidats et partis
+    <span class="sep">·</span> Europe · Lobbying institutionnel · Affaires publiques
+    <span class="sep">·</span> Suivez-nous · Instagram @stratosconseils · X @stratosconseils
+    <span class="sep">·</span>
+  </div>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero-wrap">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="ey-tag">Cabinet de Conseil</span>
+        <span class="ey-sep">·</span>
+        <span class="ey-sub">Paris · Europe</span>
+        <span class="ey-sep">·</span>
+        <span class="ey-sub">Fondé en 2024</span>
+      </div>
+      <h1 class="hero-title">
+        Stratégie politique,<br>
+        <em>géopolitique</em><br>
+        & <span class="or">conseil d'influence</span>
+      </h1>
+      <p class="hero-desc">
+        Stratos Conseils accompagne candidats, élus, organisations et entreprises dans leurs décisions stratégiques, leurs campagnes et leur communication en environnement complexe.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-hero-main" onclick="scroll_to('contact')">
+          Consultation gratuite →
+        </button>
+        <button class="btn-hero-sec" onclick="scroll_to('services')">
+          Nos services
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="h-stat">
+          <div class="h-stat-n">12+</div>
+          <div class="h-stat-l">Clients accompagnés</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-n">4</div>
+          <div class="h-stat-l">Campagnes menées</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-n">360°</div>
+          <div class="h-stat-l">Approche stratégique</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO CARD — CTA rapide -->
+    <div class="hero-card">
+      <div class="hc-label">Disponible maintenant</div>
+      <div class="hc-title">Première consultation gratuite</div>
+      <div class="hc-desc">Échangeons 30 minutes sur votre enjeu stratégique. Diagnostic sans engagement.</div>
+      <div class="hc-fields">
+        <div class="hc-field"><span class="hc-field-dot dot-r"></span>Conseil en stratégie politique</div>
+        <div class="hc-field"><span class="hc-field-dot dot-b"></span>Gestion de campagne électorale</div>
+        <div class="hc-field"><span class="hc-field-dot dot-o"></span>Rédaction de discours</div>
+        <div class="hc-field"><span class="hc-field-dot dot-b"></span>Marchés publics & contrats gouvernementaux</div>
+        <div class="hc-field"><span class="hc-field-dot dot-r"></span>Communication de crise</div>
+      </div>
+      <button class="btn-full" onclick="scroll_to('contact')">Prendre rendez-vous →</button>
+      <button class="btn-full-or" onclick="scroll_to('contact')">Nous écrire</button>
+      <div class="hc-note">Réponse sous 24h · Confidentiel</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EXPERTISE BAND ══ -->
+<div class="expertise-band">
+  <div class="exp-inner">
+    <div class="exp-item">
+      <div class="exp-num">5+</div>
+      <div class="exp-lbl">Années d'expertise</div>
+    </div>
+    <div class="exp-sep"></div>
+    <div class="exp-item">
+      <div class="exp-num">27</div>
+      <div class="exp-lbl">Pays couverts</div>
+    </div>
+    <div class="exp-sep"></div>
+    <div class="exp-item">
+      <div class="exp-num">100%</div>
+      <div class="exp-lbl">Confidentialité</div>
+    </div>
+    <div class="exp-sep"></div>
+    <div class="exp-item">
+      <div class="exp-num">24h</div>
+      <div class="exp-lbl">Délai de réponse</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SERVICES ══ -->
+<section id="services">
+  <div class="sec-wrap">
+    <div class="sec-hdr">
+      <div class="sec-title">Nos Services <span class="sec-badge-r">8 pôles</span></div>
+      <div style="font-family:var(--ft-mono);font-size:10px;color:var(--b30);cursor:pointer" onclick="scroll_to('contact')">Devis sur mesure →</div>
+    </div>
+    <p class="sec-sub">Une offre intégrée pour accompagner chaque dimension de votre stratégie politique et de communication.</p>
+  </div>
+  <div style="max-width:var(--max);margin:0 auto;padding:0 20px">
+    <div class="services-grid">
+
+      <div class="serv-card feat">
+        <div class="serv-num">01</div>
+        <div class="serv-icon">🎯</div>
+        <div class="serv-name">Conseil Stratégique Politique</div>
+        <div class="serv-desc">Positionnement électoral, construction d'agenda, analyse des rapports de force, cartographie des alliances. Du diagnostic à la décision.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Positionnement</span>
+          <span class="s-tag">Agenda</span>
+          <span class="s-tag">Alliances</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+      <div class="serv-card">
+        <div class="serv-num">02</div>
+        <div class="serv-icon">🗳️</div>
+        <div class="serv-name">Gestion de Campagnes Électorales</div>
+        <div class="serv-desc">Direction opérationnelle de campagne, sondages & data, mobilisation terrain, stratégie numérique. Municipales, législatives, présidentielle.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Direction</span>
+          <span class="s-tag">Terrain</span>
+          <span class="s-tag">Digital</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+      <div class="serv-card">
+        <div class="serv-num">03</div>
+        <div class="serv-icon">📡</div>
+        <div class="serv-name">Communication Politique</div>
+        <div class="serv-desc">Stratégie de contenu, media training, gestion des réseaux sociaux, fabrication de l'image publique. Cohérence et impact sur tous les canaux.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Message</span>
+          <span class="s-tag">Réseaux</span>
+          <span class="s-tag">Media</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+      <!-- NOUVEAU SERVICE 04 -->
+      <div class="serv-card" style="border-top:2px solid rgba(201,164,74,.35)">
+        <div class="serv-num">04</div>
+        <div class="serv-icon">✍️</div>
+        <div class="serv-name">Rédaction de Discours & Prises de Parole</div>
+        <div class="serv-desc">Écriture de discours politiques, allocutions, tribunes et éléments de langage. Chaque texte est construit autour d'un fil narratif précis, calibré pour l'audience cible et le moment politique. Du discours de campagne au grand oral institutionnel.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Speechwriting</span>
+          <span class="s-tag">Narratif</span>
+          <span class="s-tag">Tribunes</span>
+          <span class="s-tag">Éléments de langage</span>
+        </div>
+        <div style="margin-top:12px;padding:10px 12px;background:var(--b12);border:1px solid var(--rule);font-size:11px;color:var(--b55);line-height:1.6">
+          <strong style="color:var(--or);font-family:var(--ft-mono);font-size:9px;letter-spacing:.08em">INCLUS :</strong><br>
+          Réunions de briefing · Versions multiples · Relecture & cohérence de positionnement · Préparation aux questions
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+      <div class="serv-card">
+        <div class="serv-num">05</div>
+        <div class="serv-icon">🌐</div>
+        <div class="serv-name">Intelligence Géopolitique</div>
+        <div class="serv-desc">Veille stratégique, anticipation des risques, analyse des contextes internationaux pour entreprises, organisations et décideurs publics.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Veille</span>
+          <span class="s-tag">Risques</span>
+          <span class="s-tag">Rapports</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+      <div class="serv-card">
+        <div class="serv-num">06</div>
+        <div class="serv-icon">🛡️</div>
+        <div class="serv-name">Gestion de Crise</div>
+        <div class="serv-desc">Cellule de crise, stratégie de réponse, maîtrise de l'espace médiatique sous pression. Intervention d'urgence et accompagnement post-crise.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Urgence</span>
+          <span class="s-tag">Médias</span>
+          <span class="s-tag">Réponse</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+      <!-- NOUVEAU SERVICE 07 -->
+      <div class="serv-card span2" style="border-top:2px solid rgba(37,80,192,.5);background:linear-gradient(135deg,var(--s2),rgba(37,80,192,.06))">
+        <div class="serv-num">07</div>
+        <div class="serv-icon">🏛️</div>
+        <div class="serv-name">Marchés Publics & Contrats Gouvernementaux</div>
+        <div class="serv-desc">Accompagnement des entreprises et investisseurs dans l'accès aux marchés publics, appels d'offres gouvernementaux et partenariats public-privé (PPP). Nous intervenons sur l'ensemble de la chaîne : identification des opportunités, construction du dossier de candidature, positionnement stratégique auprès des décideurs publics, et négociation des termes contractuels.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;">
+          <div style="padding:10px 12px;background:var(--b12);border:1px solid var(--rule);font-size:12px;color:var(--b55)">
+            <div style="font-family:var(--ft-mono);font-size:9px;color:var(--bleu-v);letter-spacing:.08em;margin-bottom:5px">INVESTISSEMENT INTERNATIONAL</div>
+            Structuration de projets d'investissement impliquant des acteurs gouvernementaux étrangers (fonds souverains, agences de développement, ministères). Cartographie des interlocuteurs, protocoles de négociation, gestion des relations diplomatiques et commerciales.
+          </div>
+          <div style="padding:10px 12px;background:var(--b12);border:1px solid var(--rule);font-size:12px;color:var(--b55)">
+            <div style="font-family:var(--ft-mono);font-size:9px;color:var(--or);letter-spacing:.08em;margin-bottom:5px">PROJETS GOUVERNEMENTAUX</div>
+            Conseil pour l'accès à des contrats de grands projets publics — infrastructures, énergie, défense, numérique d'État. Due diligence réglementaire, lobbying institutionnel ciblé et accompagnement à la signature.
+          </div>
+        </div>
+        <div class="serv-tags">
+          <span class="s-tag">PPP</span>
+          <span class="s-tag">Marchés publics</span>
+          <span class="s-tag">Fonds souverains</span>
+          <span class="s-tag">Négociation</span>
+          <span class="s-tag">Due diligence</span>
+          <span class="s-tag">International</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">Discuter d'un projet →</div>
+      </div>
+
+      <div class="serv-card">
+        <div class="serv-num">08</div>
+        <div class="serv-icon">🇪🇺</div>
+        <div class="serv-name">Affaires Européennes</div>
+        <div class="serv-desc">Lobbying institutionnel, suivi législatif européen, influence auprès des institutions UE. Bruxelles, Parlement, Conseil. Positionnement et réseau.</div>
+        <div class="serv-tags">
+          <span class="s-tag">Bruxelles</span>
+          <span class="s-tag">Lobbying</span>
+          <span class="s-tag">PE</span>
+        </div>
+        <div class="serv-cta" onclick="scroll_to('contact')">En savoir plus →</div>
+      </div>
+
+    </div>
+    <!-- CTA SOUS SERVICES -->
+    <div style="background:var(--s2);border:1px solid var(--rule2);border-top:none;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div>
+        <div style="font-family:var(--ft-serif);font-size:15px;font-weight:700;margin-bottom:3px">Besoin d'une offre sur mesure ?</div>
+        <div style="font-size:12px;color:var(--b55)">Chaque mission est construite en fonction de vos objectifs spécifiques.</div>
+      </div>
+      <button class="btn-rouge" onclick="scroll_to('contact')">Demander un devis gratuit →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHO / EXPERTISE ══ -->
+<section id="expertise">
+  <div class="sec-wrap">
+    <div class="sec-hdr">
+      <div class="sec-title">Notre Expertise</div>
+    </div>
+    <div class="who-grid">
+      <div class="who-left">
+        <div class="who-tag">À propos du cabinet</div>
+        <h2 class="who-title">Un cabinet au croisement de la stratégie, de la politique et de la géopolitique</h2>
+        <p class="who-desc">
+          Stratos Conseils est né de la conviction que les décisions politiques et stratégiques exigent une analyse rigoureuse, une connaissance profonde des rapports de force, et une capacité d'exécution concrète.
+        </p>
+        <p class="who-desc">
+          Notre approche combine l'analyse géopolitique, la science politique appliquée et l'expérience opérationnelle des campagnes — pour vous donner un avantage décisif.
+        </p>
+        <div class="who-signature">
+          <div class="sig-av">SC</div>
+          <div>
+            <div class="sig-name">Fondateur, Stratos Conseils</div>
+            <div class="sig-role">Analyste stratégique · Consultant politique · Paris</div>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn-rouge" onclick="scroll_to('contact')">Travailler ensemble →</button>
+        </div>
+      </div>
+
+      <div class="who-right">
+        <div class="comp-block">
+          <div class="comp-label">Domaines politiques</div>
+          <div class="comp-item"><div class="comp-dot dot-r"></div><div class="comp-text">Stratégie électorale</div><div class="comp-level">Expert</div></div>
+          <div class="comp-item"><div class="comp-dot dot-r"></div><div class="comp-text">Communication de crise</div><div class="comp-level">Expert</div></div>
+          <div class="comp-item"><div class="comp-dot dot-b"></div><div class="comp-text">Affaires publiques UE</div><div class="comp-level">Senior</div></div>
+          <div class="comp-item"><div class="comp-dot dot-b"></div><div class="comp-text">Lobbying institutionnel</div><div class="comp-level">Senior</div></div>
+        </div>
+        <div class="comp-block">
+          <div class="comp-label">Analyse & Géopolitique</div>
+          <div class="comp-item"><div class="comp-dot dot-o"></div><div class="comp-text">Géopolitique européenne</div><div class="comp-level">Expert</div></div>
+          <div class="comp-item"><div class="comp-dot dot-o"></div><div class="comp-text">Risques & Intelligence</div><div class="comp-level">Expert</div></div>
+          <div class="comp-item"><div class="comp-dot dot-b"></div><div class="comp-text">Relations franco-allemandes</div><div class="comp-level">Senior</div></div>
+          <div class="comp-item"><div class="comp-dot dot-r"></div><div class="comp-text">Sahel & Afrique francophone</div><div class="comp-level">Confirmé</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PORTFOLIO ══ -->
+<section id="portfolio">
+  <div class="sec-wrap">
+    <div class="sec-hdr">
+      <div class="sec-title">Portfolio <span class="sec-badge">Références</span></div>
+      <div style="font-family:var(--ft-mono);font-size:10px;color:var(--b30)">Missions sélectionnées</div>
+    </div>
+    <p class="sec-sub">Quelques missions représentatives menées par le cabinet. La confidentialité de nos clients est notre priorité absolue.</p>
+
+    <div class="portfolio-grid">
+
+      <div class="port-card conf">
+        <div class="conf-msg">🔒 Client confidentiel</div>
+        <div class="port-cat">Campagne Électorale · Législatives</div>
+        <div class="port-title">Stratégie & coordination d'une campagne législative en Île-de-France</div>
+        <div class="port-desc">Direction stratégique complète — sondages, terrain, digital, media. Accompagnement du candidat de la 1ère réunion à la nuit électorale.</div>
+        <div class="port-footer">
+          <div class="port-tags"><span class="port-tag">Campagne</span><span class="port-tag">Terrain</span><span class="port-tag">Digital</span></div>
+          <div class="port-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="port-card">
+        <div class="port-cat">Communication Politique · Crise</div>
+        <div class="port-title">Cellule de crise pour un élu confronté à une attaque médiatique coordonnée</div>
+        <div class="port-desc">Activation d'une cellule de crise en 4h. Stratégie de réponse, gestion des prises de parole, reconquête narrative sur 6 semaines.</div>
+        <div class="port-footer">
+          <div class="port-tags"><span class="port-tag">Crise</span><span class="port-tag">Médias</span></div>
+          <div class="port-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="port-card">
+        <div class="port-cat">Intelligence Géopolitique · Corporate</div>
+        <div class="port-title">Rapport stratégique sur les risques d'expansion en Afrique subsaharienne</div>
+        <div class="port-desc">Analyse approfondie pour un groupe industriel français : cartographie des risques politiques, institutionnels et sécuritaires sur 4 pays.</div>
+        <div class="port-footer">
+          <div class="port-tags"><span class="port-tag">Afrique</span><span class="port-tag">Risques</span><span class="port-tag">Corporate</span></div>
+          <div class="port-arrow">→</div>
+        </div>
+      </div>
+
+      <div class="port-card conf">
+        <div class="conf-msg">🔒 Client confidentiel</div>
+        <div class="port-cat">Affaires Européennes · Influence</div>
+        <div class="port-title">Mission de positionnement auprès d'institutions européennes</div>
+        <div class="port-desc">Stratégie d'influence et de networking institutionnel à Bruxelles. Suivi de législations sectorielles et relation avec parlementaires européens.</div>
+        <div class="port-footer">
+          <div class="port-tags"><span class="port-tag">Bruxelles</span><span class="port-tag">PE</span><span class="port-tag">Lobbying</span></div>
+          <div class="port-arrow">→</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center;padding-bottom:48px">
+      <button class="btn-hero-sec" onclick="scroll_to('contact')">Discuter de votre projet →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROCESSUS ══ -->
+<div class="process-strip">
+  <div class="process-inner">
+    <div class="sec-hdr" style="padding:0 0 0">
+      <div class="sec-title">Comment on travaille</div>
+    </div>
+    <div class="process-grid">
+      <div class="proc-step">
+        <div class="proc-num">01</div>
+        <div class="proc-title">Consultation initiale</div>
+        <div class="proc-desc">30 minutes gratuites pour comprendre votre enjeu, votre contexte et définir si nous pouvons vous aider.</div>
+        <div class="proc-arrow">›</div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num">02</div>
+        <div class="proc-title">Diagnostic stratégique</div>
+        <div class="proc-desc">Analyse approfondie de votre situation, cartographie des forces en présence, identification des leviers d'action.</div>
+        <div class="proc-arrow">›</div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num">03</div>
+        <div class="proc-title">Proposition & mission</div>
+        <div class="proc-desc">Une feuille de route claire, des livrables précis, une organisation adaptée à vos contraintes.</div>
+        <div class="proc-arrow">›</div>
+      </div>
+      <div class="proc-step">
+        <div class="proc-num">04</div>
+        <div class="proc-title">Exécution & suivi</div>
+        <div class="proc-desc">Accompagnement opérationnel continu, ajustement en temps réel, reporting régulier sur les indicateurs définis.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <button class="btn-rouge" onclick="scroll_to('contact')">Démarrer maintenant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TÉMOIGNAGES ══ -->
+<section>
+  <div class="sec-wrap">
+    <div class="sec-hdr">
+      <div class="sec-title">Ils nous font confiance</div>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-mark">"</div>
+        <div class="testi-text">Une capacité d'analyse hors pair et une vision stratégique qui nous a permis de repositionner notre campagne à un moment critique. Professionnel, discret, efficace.</div>
+        <div class="testi-name">Élu local, Île-de-France</div>
+        <div class="testi-role">Campagne législative 2024</div>
+        <div class="testi-conf">Témoignage anonymisé</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-mark">"</div>
+        <div class="testi-text">La crise aurait pu être fatale. L'intervention de Stratos Conseils a été décisive — réactivité, lucidité, maîtrise totale du calendrier médiatique.</div>
+        <div class="testi-name">Dirigeant, organisation nationale</div>
+        <div class="testi-role">Gestion de crise · 2025</div>
+        <div class="testi-conf">Témoignage anonymisé</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-mark">"</div>
+        <div class="testi-text">Le rapport géopolitique livré a transformé notre vision du marché africain. Dense, rigoureux, opérationnel. Exactement ce dont nous avions besoin pour prendre notre décision.</div>
+        <div class="testi-name">DG, groupe industriel français</div>
+        <div class="testi-role">Intelligence stratégique · 2025</div>
+        <div class="testi-conf">Témoignage anonymisé</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA FINAL ══ -->
+<div class="cta-final">
+  <div class="cta-inner">
+    <span class="cta-tag">Passez à l'action</span>
+    <h2 class="cta-title">Votre enjeu mérite une stratégie à la hauteur</h2>
+    <p class="cta-desc">
+      Que vous prépariez une campagne, traversiez une crise, ou cherchiez à comprendre un contexte géopolitique complexe — Stratos Conseils est là.
+    </p>
+    <div class="cta-btns">
+      <button class="btn-cta-main" onclick="scroll_to('contact')">Consultation gratuite →</button>
+      <button class="btn-cta-sec" onclick="scroll_to('contact')">Nous écrire</button>
+    </div>
+    <div class="cta-note">Réponse sous 24 heures · Strictement confidentiel · Sans engagement</div>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact" class="contact-strip">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div class="contact-lbl">Contactez-nous</div>
+      <h2 class="contact-title">Parlons de votre projet</h2>
+      <p class="contact-desc">
+        Que vous ayez un projet précis ou simplement une question stratégique, nous sommes disponibles pour un échange confidentiel.
+      </p>
+      <div class="contact-channels">
+        <div class="c-ch">
+          <div class="c-ch-icon">📧</div>
+          <div class="c-ch-label">Email</div>
+          <div class="c-ch-val">stratosconseils@gmail.com</div>
+        </div>
+        <div class="c-ch" onclick="window.open('https://www.instagram.com/stratosconseils?igsh=MW40dDJxenpndjlkeg%3D%3D&utm_source=qr','_blank')" style="cursor:pointer">
+          <div class="c-ch-icon">📷</div>
+          <div class="c-ch-label">Instagram</div>
+          <div class="c-ch-val">@stratosconseils ↗</div>
+        </div>
+        <div class="c-ch" onclick="window.open('https://x.com/stratosconseils?s=11','_blank')" style="cursor:pointer">
+          <div class="c-ch-icon">𝕏</div>
+          <div class="c-ch-label">Twitter / X</div>
+          <div class="c-ch-val">@stratosconseils ↗</div>
+        </div>
+        <div class="c-ch" style="border-color:var(--or-b)">
+          <div class="c-ch-icon">📍</div>
+          <div class="c-ch-label" style="color:var(--or)">Paris, France</div>
+          <div class="c-ch-val">Sur RDV</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-sep"></div>
+
+    <div class="contact-right">
+      <div style="font-family:var(--ft-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--rouge-v);margin-bottom:16px;display:flex;align-items:center;gap:6px">
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--rouge-v);display:inline-block;animation:blink 1.4s infinite"></span>
+        Consultation gratuite — 30 minutes
+      </div>
+      <div class="form-2col form-row">
+        <div>
+          <label class="form-label">Prénom *</label>
+          <input type="text" class="form-input" placeholder="Jean">
+        </div>
+        <div>
+          <label class="form-label">Nom *</label>
+          <input type="text" class="form-input" placeholder="Dupont">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Email *</label>
+        <input type="email" class="form-input" placeholder="jean@exemple.fr">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Organisation / Parti / Entreprise</label>
+        <input type="text" class="form-input" placeholder="Optionnel">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Type de mission *</label>
+        <select class="form-select">
+          <option value="">— Sélectionner —</option>
+          <option>Conseil stratégique politique</option>
+          <option>Gestion de campagne électorale</option>
+          <option>Communication politique</option>
+          <option>Rédaction de discours & prises de parole</option>
+          <option>Intelligence géopolitique</option>
+          <option>Gestion de crise</option>
+          <option>Marchés publics & contrats gouvernementaux</option>
+          <option>Investissement international via gouvernement</option>
+          <option>Affaires européennes</option>
+          <option>Autre / À définir</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Votre message</label>
+        <textarea class="form-textarea" placeholder="Décrivez brièvement votre contexte et vos objectifs..."></textarea>
+      </div>
+      <button class="btn-form">Envoyer ma demande →</button>
+      <div class="form-note">Réponse garantie sous 24h · Échange strictement confidentiel</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-top">
+  <div class="footer-top-inner">
+    <div>
+      <div class="footer-logo-wrap">
+        <div class="logo-container" style="margin-bottom:4px">
+          <span class="logo-letter" style="font-size:16px">STRAT</span>
+          <span class="logo-O-wrap" style="width:18px;height:18px">
+            <span class="logo-letter" style="font-size:16px;position:relative;z-index:2">O</span>
+            <span class="logo-O-ring" style="width:16px;height:16px"></span>
+          </span>
+          <span class="logo-letter" style="font-size:16px">S</span>
+        </div>
+        <div style="font-family:var(--ft-mono);font-size:7px;letter-spacing:.16em;color:var(--or);text-transform:uppercase">Conseils</div>
+      </div>
+      <div class="footer-desc">Cabinet de conseil indépendant en stratégie politique, géopolitique et communication. Fondé à Paris.</div>
+      <div class="footer-soc">
+        <div class="soc-btn" onclick="window.open('https://www.instagram.com/stratosconseils?igsh=MW40dDJxenpndjlkeg%3D%3D&utm_source=qr','_blank')" title="Instagram" style="cursor:pointer">📷</div>
+        <div class="soc-btn" onclick="window.open('https://x.com/stratosconseils?s=11','_blank')" title="X / Twitter" style="cursor:pointer">𝕏</div>
+      </div>
+    </div>
+    <div>
+      <div class="ft-col-title">Services</div>
+      <a class="ft-link">Conseil stratégique politique</a>
+      <a class="ft-link">Gestion de campagnes</a>
+      <a class="ft-link">Communication politique</a>
+      <a class="ft-link">Rédaction de discours</a>
+      <a class="ft-link">Marchés publics & contrats gouvernementaux</a>
+      <a class="ft-link">Gestion de crise</a>
+      <a class="ft-link">Intelligence géopolitique</a>
+      <a class="ft-link">Affaires européennes</a>
+    </div>
+    <div>
+      <div class="ft-col-title">Cabinet</div>
+      <a class="ft-link" onclick="scroll_to('expertise')">Notre expertise</a>
+      <a class="ft-link" onclick="scroll_to('portfolio')">Portfolio</a>
+      <a class="ft-link" onclick="scroll_to('contact')">Contact</a>
+      <a class="ft-link" target="_blank">Stratos Média ↗</a>
+    </div>
+    <div>
+      <div class="ft-col-title">Consultation</div>
+      <div style="font-size:13px;color:var(--b55);line-height:1.65;margin-bottom:14px">Première consultation gratuite et sans engagement.</div>
+      <button class="btn-rouge" style="width:100%;padding:10px;" onclick="scroll_to('contact')">Prendre RDV →</button>
+    </div>
+  </div>
+</div>
+<div class="footer-bottom">
+  <div class="footer-bottom-inner">
+    <div class="footer-logo-sm">Stratos Conseils</div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="openModal('modal-ml')">Mentions légales</span>
+      <span class="footer-link" onclick="openModal('modal-cgu')">CGU / CGV</span>
+      <span class="footer-link" onclick="openModal('modal-rgpd')">Confidentialité & RGPD</span>
+      <span class="footer-link" onclick="scroll_to('contact')">Contact</span>
+    </div>
+    <div class="footer-legal">© Stratos Conseils 2026 · Paris</div>
+  </div>
+</div>
+
+
+<!-- STICKY BAR MOBILE -->
+<div class="sticky-bar">
+  <button class="btn-rouge" style="flex:1;padding:10px;font-size:13px" onclick="scroll_to('contact')">Consultation gratuite →</button>
+  <button class="btn-ghost" style="padding:10px 14px;font-size:13px" onclick="scroll_to('contact')">Écrire</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALES LÉGALES
+════════════════════════════════════════════ -->
+<style>
+/* ── MODAL OVERLAY ── */
+.legal-overlay{
+  position:fixed;inset:0;z-index:9100;
+  background:rgba(5,12,26,.97);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:40px 20px 60px;
+  overflow-y:auto;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s ease;
+}
+.legal-overlay.open{opacity:1;pointer-events:all}
+
+.legal-modal{
+  background:var(--s2);
+  border:1px solid var(--rule2);
+  border-top:2px solid var(--rouge-v);
+  width:100%;max-width:760px;
+  padding:40px 44px 52px;
+  position:relative;
+  animation:modalin .22s ease;
+  flex-shrink:0;
+}
+@keyframes modalin{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.modal-close{
+  position:absolute;top:16px;right:18px;
+  background:transparent;border:none;
+  color:var(--b30);font-size:22px;cursor:pointer;
+  transition:var(--tr);line-height:1;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{color:var(--blanc);background:var(--s3)}
+
+.modal-eyebrow{
+  font-family:var(--ft-mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--rouge-v);margin-bottom:10px;
+}
+.modal-title{
+  font-family:var(--ft-serif);font-size:clamp(20px,2.5vw,28px);
+  font-weight:700;line-height:1.15;margin-bottom:6px;
+}
+.modal-updated{
+  font-family:var(--ft-mono);font-size:10px;color:var(--b30);
+  letter-spacing:.05em;margin-bottom:28px;padding-bottom:18px;
+  border-bottom:1px solid var(--rule);
+}
+.modal-nav{
+  display:flex;gap:0;margin-bottom:28px;
+  border:1px solid var(--rule2);overflow:hidden;flex-wrap:wrap;
+}
+.modal-nav-btn{
+  font-family:var(--ft-mono);font-size:10px;letter-spacing:.07em;
+  padding:7px 14px;background:transparent;border:none;
+  color:var(--b30);cursor:pointer;transition:var(--tr);
+  border-right:1px solid var(--rule2);
+}
+.modal-nav-btn:last-child{border-right:none}
+.modal-nav-btn:hover{background:var(--s3);color:var(--blanc)}
+.modal-nav-btn.on{background:var(--bleu-v);color:#fff}
+
+/* ── LEGAL CONTENT TYPOGRAPHY ── */
+.legal-body{color:var(--b55);font-size:13px;line-height:1.8}
+.legal-body h2{
+  font-family:var(--ft-serif);font-size:15px;font-weight:700;
+  color:var(--blanc);margin:28px 0 10px;padding-left:12px;
+  border-left:2px solid var(--rouge-v);
+}
+.legal-body h3{
+  font-family:var(--ft-sans);font-size:13px;font-weight:600;
+  color:var(--b80);margin:16px 0 6px;
+}
+.legal-body p{margin-bottom:12px}
+.legal-body ul{padding-left:20px;margin-bottom:12px}
+.legal-body ul li{margin-bottom:5px}
+.legal-body a{color:var(--bleu-v)}
+.legal-body strong{color:var(--b80);font-weight:600}
+.info-block{
+  background:var(--s3);border:1px solid var(--rule2);
+  border-left:3px solid var(--bleu-v);
+  padding:14px 16px;margin:14px 0;font-size:12px;line-height:1.7;
+}
+.warn-block{
+  background:var(--s3);border:1px solid var(--rule2);
+  border-left:3px solid var(--or);
+  padding:14px 16px;margin:14px 0;font-size:12px;color:var(--b55);line-height:1.65;
+}
+.legal-body table{
+  width:100%;border-collapse:collapse;margin:14px 0;font-size:12px;
+}
+.legal-body table th{
+  background:var(--s3);color:var(--b80);font-weight:600;
+  padding:8px 12px;border:1px solid var(--rule2);text-align:left;
+  font-family:var(--ft-mono);font-size:10px;letter-spacing:.06em;
+}
+.legal-body table td{
+  padding:8px 12px;border:1px solid var(--rule);vertical-align:top;
+}
+
+@media(max-width:600px){
+  .legal-modal{padding:24px 18px 40px}
+  .legal-overlay{padding:0}
+  .legal-modal{min-height:100vh}
+}
+</style>
+
+<!-- ══ MODALE 1 — MENTIONS LÉGALES ══ -->
+<div class="legal-overlay" id="modal-ml" onclick="closeOnBg(event,'modal-ml')">
+  <div class="legal-modal">
+    <button class="modal-close" onclick="closeModal('modal-ml')">×</button>
+    <div class="modal-eyebrow">Document légal</div>
+    <h1 class="modal-title">Mentions légales</h1>
+    <div class="modal-updated">Dernière mise à jour : mars 2026 · Conformes à la loi n° 2004-575 du 21 juin 2004 (LCEN)</div>
+    <div class="modal-nav">
+      <button class="modal-nav-btn on">Mentions légales</button>
+      <button class="modal-nav-btn" onclick="openModal('modal-rgpd')">Confidentialité & RGPD</button>
+      <button class="modal-nav-btn" onclick="openModal('modal-cgu')">CGU / CGV</button>
+    </div>
+    <div class="legal-body">
+
+      <h2>1. Éditeur du site</h2>
+      <div class="info-block">
+        <strong>Stratos Conseils</strong><br>
+        Forme juridique : [SAS / SASU / Auto-entrepreneur — à compléter]<br>
+        Capital social : [À compléter]<br>
+        Siège social : [Adresse complète — Paris, France]<br>
+        SIRET : [À compléter]<br>
+        RCS Paris : [À compléter]<br>
+        N° TVA intracommunautaire : [À compléter]<br>
+        Email : stratosconseils@gmail.com<br>
+        Directeur de la publication : [Prénom Nom]
+      </div>
+
+      <h2>2. Hébergement</h2>
+      <p>Le site <strong>stratos-conseils.fr</strong> est hébergé par :</p>
+      <div class="info-block">
+        [Nom de l'hébergeur — ex. OVH SAS / Vercel Inc.]<br>
+        [Adresse complète de l'hébergeur]<br>
+        [Téléphone ou email de contact]
+      </div>
+
+      <h2>3. Activité et statut</h2>
+      <p>Stratos Conseils exerce une activité de conseil en stratégie politique, communication, affaires publiques et intelligence géopolitique. Cette activité n'est soumise à aucune réglementation spécifique d'ordre professionnel autre que le droit commun applicable aux activités de conseil.</p>
+      <p>Le cabinet n'exerce pas d'activité juridique au sens de la loi n° 71-1130 du 31 décembre 1971. Les prestations relatives aux marchés publics et contrats gouvernementaux sont exercées à titre de conseil stratégique et d'accompagnement, sans mandat de représentation juridique.</p>
+      <p>Stratos Conseils n'est pas inscrit au registre des représentants d'intérêts de la HATVP sauf dans le cas où son activité réelle de représentation d'intérêts auprès de décideurs publics dépasse les seuils légaux définis par la loi Sapin II (loi n° 2016-1691 du 9 décembre 2016).</p>
+
+      <h2>4. Propriété intellectuelle</h2>
+      <p>L'ensemble des éléments du site stratos-conseils.fr — textes, visuels, structure, logo, dénomination "Stratos Conseils" — est la propriété exclusive de Stratos Conseils, protégé par le Code de la propriété intellectuelle français.</p>
+      <p>Toute reproduction, représentation, diffusion, modification ou utilisation, même partielle, de tout ou partie du site, par quelque procédé que ce soit, sans autorisation écrite préalable est strictement interdite et constituerait une contrefaçon au sens des articles L. 335-2 et suivants du Code de la propriété intellectuelle, passible de poursuites civiles et pénales.</p>
+
+      <h2>5. Liens hypertextes</h2>
+      <p>La mise en place de liens hypertextes vers une page quelconque du site stratos-conseils.fr est soumise à l'accord préalable écrit de l'éditeur. Stratos Conseils ne peut être tenu responsable du contenu des sites tiers accessibles via des liens présents sur ce site.</p>
+
+      <h2>6. Limitation de responsabilité</h2>
+      <p>Les informations publiées sur ce site ont une vocation exclusivement informative et commerciale. Elles ne constituent pas un conseil professionnel (juridique, fiscal, financier ou politique). Stratos Conseils s'efforce d'assurer l'exactitude des informations diffusées mais décline toute responsabilité quant à leur exhaustivité, actualité ou adéquation à une situation particulière.</p>
+
+      <h2>7. Droit applicable et juridiction compétente</h2>
+      <p>Le présent site est soumis au droit français. Tout litige relatif à son utilisation relève de la compétence exclusive des <strong>tribunaux de Paris</strong>, nonobstant pluralité de défendeurs ou appel en garantie, y compris pour les procédures d'urgence ou de référé.</p>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALE 2 — RGPD ══ -->
+<div class="legal-overlay" id="modal-rgpd" onclick="closeOnBg(event,'modal-rgpd')">
+  <div class="legal-modal">
+    <button class="modal-close" onclick="closeModal('modal-rgpd')">×</button>
+    <div class="modal-eyebrow">Document légal</div>
+    <h1 class="modal-title">Politique de confidentialité & RGPD</h1>
+    <div class="modal-updated">Dernière mise à jour : mars 2026 · Conforme au RGPD (UE) 2016/679 et à la loi Informatique et Libertés modifiée</div>
+    <div class="modal-nav">
+      <button class="modal-nav-btn" onclick="openModal('modal-ml')">Mentions légales</button>
+      <button class="modal-nav-btn on">Confidentialité & RGPD</button>
+      <button class="modal-nav-btn" onclick="openModal('modal-cgu')">CGU / CGV</button>
+    </div>
+    <div class="legal-body">
+
+      <h2>1. Responsable du traitement</h2>
+      <div class="info-block">
+        <strong>Stratos Conseils</strong> — [Forme juridique]<br>
+        Siège social : [Adresse complète, Paris]<br>
+        Email DPO / contact RGPD : <strong>stratosconseils@gmail.com</strong><br>
+        SIRET : [À compléter]
+      </div>
+
+      <h2>2. Données collectées et finalités</h2>
+      <p>Dans le cadre de l'utilisation du formulaire de contact et des relations commerciales, Stratos Conseils collecte les données suivantes :</p>
+      <table>
+        <tr><th>Donnée collectée</th><th>Finalité</th><th>Base légale (art. 6 RGPD)</th></tr>
+        <tr><td>Nom, prénom</td><td>Identification du demandeur</td><td>Intérêt légitime</td></tr>
+        <tr><td>Adresse email</td><td>Réponse à la demande de contact</td><td>Intérêt légitime</td></tr>
+        <tr><td>Organisation / employeur</td><td>Qualification de la demande commerciale</td><td>Consentement (champ optionnel)</td></tr>
+        <tr><td>Type de mission</td><td>Orientation de la réponse et proposition commerciale</td><td>Intérêt légitime</td></tr>
+        <tr><td>Contenu du message libre</td><td>Traitement de la demande</td><td>Intérêt légitime</td></tr>
+        <tr><td>Données de navigation (logs)</td><td>Sécurité et fonctionnement technique</td><td>Intérêt légitime</td></tr>
+      </table>
+      <div class="warn-block">
+        <strong>Données sensibles — Article 9 RGPD :</strong> Stratos Conseils ne collecte, ne stocke ni ne traite aucune opinion politique, conviction philosophique ou religieuse, appartenance syndicale ou donnée de santé. Si vous intervenez dans le champ politique, votre qualité professionnelle peut être collectée mais non vos opinions. Toute information sensible communiquée spontanément sera immédiatement supprimée.
+      </div>
+
+      <h2>3. Durée de conservation</h2>
+      <ul>
+        <li><strong>Demandes de contact sans suite commerciale</strong> : 3 ans à compter du dernier contact (recommandation CNIL)</li>
+        <li><strong>Relations contractuelles</strong> : 5 ans après la fin du contrat (obligations comptables et fiscales)</li>
+        <li><strong>Données de facturation</strong> : 10 ans (article L. 123-22 Code de commerce)</li>
+        <li><strong>Logs techniques</strong> : 12 mois</li>
+      </ul>
+
+      <h2>4. Destinataires et sous-traitance</h2>
+      <p>Les données sont traitées exclusivement par Stratos Conseils et ses collaborateurs habilités. Elles ne font l'objet d'aucune cession, location, échange ou vente à des tiers.</p>
+      <p>Stratos Conseils peut recourir à des sous-traitants techniques (hébergeur, outil d'envoi d'emails) liés par un accord de sous-traitance conforme à l'article 28 du RGPD, garantissant un niveau de protection équivalent.</p>
+      <p>En cas de transfert hors UE, Stratos Conseils s'assure du respect des garanties appropriées (clauses contractuelles types de la Commission européenne ou décision d'adéquation).</p>
+
+      <h2>5. Cookies et traceurs</h2>
+      <p>Le site stratos-conseils.fr n'utilise que des <strong>cookies techniques strictement nécessaires</strong> à son fonctionnement. Aucun cookie publicitaire, de profilage comportemental ou de mesure d'audience tierce n'est déposé sans consentement préalable explicite.</p>
+      <table>
+        <tr><th>Cookie</th><th>Type</th><th>Durée</th><th>Finalité</th></tr>
+        <tr><td>session_id</td><td>Technique essentiel</td><td>Session</td><td>Fonctionnement du site</td></tr>
+        <tr><td>consent_choice</td><td>Fonctionnel</td><td>13 mois max.</td><td>Mémorisation du choix de consentement</td></tr>
+      </table>
+
+      <h2>6. Vos droits (articles 15 à 22 RGPD)</h2>
+      <p>Vous disposez des droits suivants sur vos données personnelles :</p>
+      <ul>
+        <li><strong>Droit d'accès</strong> (art. 15) — obtenir confirmation du traitement et copie de vos données</li>
+        <li><strong>Droit de rectification</strong> (art. 16) — corriger des données inexactes ou incomplètes</li>
+        <li><strong>Droit à l'effacement</strong> (art. 17) — obtenir la suppression de vos données dans les cas prévus</li>
+        <li><strong>Droit à la limitation du traitement</strong> (art. 18) — suspendre un traitement dans certaines conditions</li>
+        <li><strong>Droit à la portabilité</strong> (art. 20) — recevoir vos données dans un format structuré et lisible par machine</li>
+        <li><strong>Droit d'opposition</strong> (art. 21) — vous opposer à un traitement fondé sur l'intérêt légitime</li>
+        <li><strong>Droit de ne pas faire l'objet d'une décision automatisée</strong> (art. 22)</li>
+      </ul>
+      <p>Pour exercer ces droits, adressez votre demande à : <strong>stratosconseils@gmail.com</strong> en joignant un justificatif d'identité. Nous vous répondons dans un délai maximum d'<strong>un mois</strong> (art. 12 RGPD), prorogeable à trois mois en cas de demande complexe.</p>
+      <p>En cas de réclamation non résolue, vous avez le droit de saisir la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) : 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07 — <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
+
+      <h2>7. Sécurité des données</h2>
+      <p>Stratos Conseils met en œuvre les mesures techniques et organisationnelles appropriées pour garantir la sécurité, la confidentialité et l'intégrité des données traitées, conformément à l'article 32 du RGPD, notamment : chiffrement des transmissions (HTTPS/TLS 1.3), contrôle strict des accès, traçabilité des opérations de traitement, et politique de mots de passe renforcée.</p>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALE 3 — CGU / CGV ══ -->
+<div class="legal-overlay" id="modal-cgu" onclick="closeOnBg(event,'modal-cgu')">
+  <div class="legal-modal">
+    <button class="modal-close" onclick="closeModal('modal-cgu')">×</button>
+    <div class="modal-eyebrow">Document légal</div>
+    <h1 class="modal-title">Conditions Générales d'Utilisation & de Vente</h1>
+    <div class="modal-updated">Dernière mise à jour : mars 2026 · Applicables à toute relation commerciale avec Stratos Conseils</div>
+    <div class="modal-nav">
+      <button class="modal-nav-btn" onclick="openModal('modal-ml')">Mentions légales</button>
+      <button class="modal-nav-btn" onclick="openModal('modal-rgpd')">Confidentialité & RGPD</button>
+      <button class="modal-nav-btn on">CGU / CGV</button>
+    </div>
+    <div class="legal-body">
+
+      <div class="warn-block">
+        Les présentes CGU/CGV s'appliquent à toute utilisation du site stratos-conseils.fr et à toute relation commerciale entre Stratos Conseils et ses clients professionnels. Elles sont accessibles à tout moment sur le site et prévalent sur tout document contraire du client, sauf accord écrit dérogatoire préalable.
+      </div>
+
+      <h2>PARTIE I — CONDITIONS GÉNÉRALES D'UTILISATION</h2>
+
+      <h2>Article 1 — Objet et acceptation</h2>
+      <p>Les présentes CGU ont pour objet de définir les conditions d'accès et d'utilisation du site <strong>stratos-conseils.fr</strong>. L'accès au site vaut acceptation pleine et entière des présentes. L'éditeur se réserve le droit de les modifier à tout moment ; les modifications sont opposables dès leur publication en ligne.</p>
+
+      <h2>Article 2 — Accès au site</h2>
+      <p>Le site est accessible gratuitement à toute personne disposant d'un accès à Internet. Tous les coûts afférents à l'accès (équipement, connexion) sont à la charge exclusive de l'utilisateur. Stratos Conseils peut suspendre l'accès au site pour des raisons de maintenance, de mise à jour ou de force majeure, sans préavis ni indemnité.</p>
+
+      <h2>Article 3 — Utilisation du formulaire de contact</h2>
+      <p>L'utilisation du formulaire de contact est réservée à des fins professionnelles et licites. L'utilisateur s'engage à fournir des informations exactes, à ne pas transmettre de contenu illicite ou portant atteinte aux droits de tiers, et à ne pas utiliser le formulaire à des fins de démarchage non sollicité.</p>
+      <p>La soumission d'un formulaire de contact ne constitue pas un engagement contractuel de la part de Stratos Conseils et ne l'oblige pas à donner suite à la demande.</p>
+
+      <h2>Article 4 — Propriété intellectuelle</h2>
+      <p>Tout le contenu du site est protégé par le droit de la propriété intellectuelle. Toute reproduction non autorisée constitue une contrefaçon susceptible d'engager la responsabilité civile et pénale de son auteur.</p>
+
+      <h2>PARTIE II — CONDITIONS GÉNÉRALES DE VENTE</h2>
+
+      <h2>Article 5 — Champ d'application et clientèle</h2>
+      <p>Les présentes CGV s'appliquent à toutes les prestations de conseil, de communication stratégique, de speechwriting, d'accompagnement en marchés publics et d'intelligence géopolitique fournies par Stratos Conseils.</p>
+      <p>Stratos Conseils intervient <strong>exclusivement auprès de clients professionnels</strong> : personnes morales, élus et candidats à des fonctions publiques, organisations politiques, partis, associations, entreprises et investisseurs institutionnels. Le Code de la consommation relatif aux relations avec les consommateurs non professionnels ne s'applique pas aux relations avec Stratos Conseils.</p>
+
+      <h2>Article 6 — Formation du contrat</h2>
+      <p>Toute mission donne lieu à une <strong>proposition commerciale écrite</strong> précisant la nature des prestations, le périmètre, les livrables attendus, le calendrier et les conditions financières. Le contrat est formé à la réception par Stratos Conseils :</p>
+      <ul>
+        <li>D'un bon de commande signé ou d'un accord exprès par email, <strong>et</strong></li>
+        <li>Du versement de l'acompte prévu dans la proposition commerciale</li>
+      </ul>
+      <p>Aucune prestation orale ne peut être engagée sans confirmation écrite préalable. Les échanges verbaux antérieurs à la signature n'ont pas de valeur contractuelle.</p>
+
+      <h2>Article 7 — Tarifs et conditions financières</h2>
+      <p>Les honoraires sont fixés librement en fonction de la nature, de la durée et de la complexité de chaque mission. Ils sont exprimés en euros hors taxes (HT) et soumis à la TVA française au taux en vigueur.</p>
+      <h3>Structure tarifaire habituelle :</h3>
+      <ul>
+        <li><strong>Acompte à la signature</strong> : 30 à 50 % du montant total selon la mission</li>
+        <li><strong>Solde</strong> : à la livraison des livrables finaux ou selon l'échéancier défini contractuellement</li>
+        <li><strong>Missions récurrentes (retainer)</strong> : facturation mensuelle à terme échu</li>
+      </ul>
+      <h3>Pénalités de retard :</h3>
+      <p>Toute facture impayée à son échéance génère automatiquement et de plein droit, sans mise en demeure préalable :</p>
+      <ul>
+        <li>Des pénalités de retard au taux directeur de la BCE majoré de 10 points (art. L. 441-10 Code de commerce)</li>
+        <li>Une indemnité forfaitaire de recouvrement de <strong>40 €</strong> par facture (art. D. 441-5 Code de commerce)</li>
+        <li>Le remboursement des frais de recouvrement supplémentaires dûment justifiés si ceux-ci dépassent 40 €</li>
+      </ul>
+
+      <h2>Article 8 — Obligations de Stratos Conseils</h2>
+      <p>Stratos Conseils s'engage à exécuter les missions avec le soin, la diligence et le niveau d'expertise attendus d'un cabinet de conseil professionnel. La présente obligation est une <strong>obligation de moyens</strong> et non de résultat, sauf stipulation contraire expresse et écrite.</p>
+      <p>Stratos Conseils s'engage à affecter à chaque mission les ressources humaines et intellectuelles appropriées, à informer régulièrement le client de l'avancement et à signaler sans délai tout obstacle susceptible d'affecter les livrables ou les délais.</p>
+
+      <h2>Article 9 — Obligations du client</h2>
+      <p>Le client s'engage à :</p>
+      <ul>
+        <li>Fournir dans les délais convenus toutes les informations, documents, accès et décisions nécessaires à la bonne exécution de la mission</li>
+        <li>Désigner un interlocuteur identifié disposant des pouvoirs de décision nécessaires</li>
+        <li>Régler les factures aux échéances convenues</li>
+        <li>Ne pas solliciter directement les collaborateurs de Stratos Conseils affectés à sa mission sans accord préalable</li>
+      </ul>
+      <p>Tout retard imputable au client dans la fourniture des éléments nécessaires pourra entraîner un report des délais de livraison sans pénalité pour Stratos Conseils et, le cas échéant, une révision du prix pour couvrir les surcoûts induits.</p>
+
+      <h2>Article 10 — Confidentialité et secret professionnel</h2>
+      <p>Stratos Conseils s'astreint à la plus stricte confidentialité sur l'ensemble des informations, données stratégiques, politiques ou commerciales communiquées par le client dans le cadre de la mission. Cette obligation s'applique pendant toute la durée du contrat et pour une période de <strong>5 ans</strong> après son terme, sans limite en cas d'information couverte par le secret des affaires.</p>
+      <p>Un accord de confidentialité (NDA) spécifique peut être signé à la demande de l'une ou l'autre des parties préalablement à tout échange d'informations sensibles.</p>
+      <p>La même obligation de confidentialité s'impose au client s'agissant des méthodes, outils, recommandations et documents de travail produits par Stratos Conseils.</p>
+
+      <h2>Article 11 — Propriété des livrables</h2>
+      <p>Les livrables produits dans le cadre d'une mission (discours, notes stratégiques, rapports d'analyse, plans de communication, éléments de langage, dossiers d'appels d'offres) sont réalisés pour le compte exclusif du client.</p>
+      <p>La propriété intellectuelle et les droits d'usage des livrables sont transférés au client après <strong>paiement intégral</strong> des honoraires correspondants. En cas de non-paiement, Stratos Conseils conserve l'intégralité des droits sur les travaux produits.</p>
+      <p>Stratos Conseils conserve le droit de mentionner l'existence de la mission dans ses références commerciales, sous forme <strong>strictement anonymisée</strong> et avec l'accord préalable du client.</p>
+
+      <h2>Article 12 — Non-sollicitation</h2>
+      <p>Le client s'interdit de recruter ou d'engager directement ou indirectement, sous quelque forme que ce soit, tout collaborateur de Stratos Conseils ayant participé à sa mission, pendant la durée du contrat et dans les <strong>12 mois</strong> suivant son terme, sous peine d'une indemnité forfaitaire équivalente à <strong>12 mois de rémunération brute</strong> du collaborateur concerné.</p>
+
+      <h2>Article 13 — Résiliation</h2>
+      <p>Chaque partie peut résilier le contrat en cas de manquement grave de l'autre partie à ses obligations, non remédié dans un délai de <strong>15 jours ouvrables</strong> à compter de la réception d'une mise en demeure par lettre recommandée avec accusé de réception.</p>
+      <p>En cas de résiliation anticipée à l'initiative du client sans faute de Stratos Conseils :</p>
+      <ul>
+        <li>Les honoraires correspondant aux prestations réalisées et aux frais engagés restent intégralement dus</li>
+        <li>Une <strong>indemnité de rupture égale à 30 % du montant restant</strong> à facturer est exigible à titre de clause pénale (art. 1231-5 Code civil)</li>
+      </ul>
+
+      <h2>Article 14 — Responsabilité</h2>
+      <p>La responsabilité de Stratos Conseils est limitée aux seuls dommages directs et prévisibles. Elle ne saurait être engagée au-delà du montant des honoraires effectivement encaissés au titre de la mission concernée au cours des douze derniers mois.</p>
+      <p>Stratos Conseils n'est en aucun cas responsable des dommages indirects, pertes d'exploitation, atteinte à l'image ou résultats politiques, électoraux, diplomatiques ou commerciaux obtenus ou non par le client à l'issue d'une mission de conseil.</p>
+
+      <h2>Article 15 — Force majeure</h2>
+      <p>Aucune des parties ne sera tenue responsable d'un retard ou d'une inexécution résultant d'un cas de force majeure au sens de l'article 1218 du Code civil. La partie affectée en informe l'autre dans les plus brefs délais. Si la force majeure se prolonge au-delà de <strong>60 jours</strong>, chacune des parties peut résilier le contrat sans indemnité, les prestations réalisées restant dues.</p>
+
+      <h2>Article 16 — Droit applicable, médiation et juridiction</h2>
+      <p>Les présentes CGV sont soumises au <strong>droit français</strong>. En cas de différend, les parties s'engagent à rechercher une solution amiable dans un délai de <strong>30 jours</strong> à compter de la notification du différend par lettre recommandée.</p>
+      <p>À défaut de résolution amiable, tout litige sera soumis à la compétence exclusive du <strong>Tribunal de Commerce de Paris</strong>, nonobstant pluralité de défendeurs, appel en garantie, procédure en référé ou d'urgence.</p>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function scroll_to(id){
+  const el=document.getElementById(id);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function openModal(id){
+  document.querySelectorAll('.legal-overlay').forEach(m=>m.classList.remove('open'));
+  const m=document.getElementById(id);
+  if(m){m.classList.add('open');m.scrollTop=0;document.body.style.overflow='hidden';}
+}
+function closeModal(id){
+  const m=document.getElementById(id);
+  if(m){m.classList.remove('open');document.body.style.overflow='';}
+}
+function closeOnBg(e,id){
+  if(e.target===document.getElementById(id))closeModal(id);
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.legal-overlay.open').forEach(m=>{
+      m.classList.remove('open');document.body.style.overflow='';
+    });
+  }
+});
+document.querySele
