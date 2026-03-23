@@ -1162,12 +1162,12 @@ body{
         <div class="c-ch" onclick="window.location.href='mailto:stratosconseils%40gmail.com'" style="cursor:pointer">
           <div class="c-ch-icon">📧</div>
           <div class="c-ch-label">Email général</div>
-          <div class="c-ch-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a5d6d1d7c4d1cad6c6cacbd6c0ccc9d6e5c2c8c4ccc98bc6cac8">[email&#160;protected]</a></div>
+          <div class="c-ch-val"><span id="email-gmail"></span></div>
         </div>
         <div class="c-ch" onclick="window.location.href='mailto:stratosconseil%40proton.me'" style="cursor:pointer;border-color:var(--or-b)">
           <div class="c-ch-icon">🔒</div>
           <div class="c-ch-label" style="color:var(--or)">Email sécurisé — Missions confidentielles</div>
-          <div class="c-ch-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="176463657663786474787964727e7b57676578637879397a72">[email&#160;protected]</a></div>
+          <div class="c-ch-val"><span id="email-proton"></span></div>
         </div>
         <div class="c-ch" onclick="window.open('https://www.instagram.com/stratosconseils?igsh=MW40dDJxenpndjlkeg%3D%3D&utm_source=qr','_blank')" style="cursor:pointer">
           <div class="c-ch-icon">📷</div>
@@ -1723,6 +1723,32 @@ if(form){
     }
   });
 }
+</script>
+
+<script>
+(function(){
+  var u='strato'+'scon'+'seils';
+  var d='gma'+'il.com';
+  var up='strato'+'scon'+'seil';
+  var dp='pro'+'ton.me';
+  var full=u+'@'+d;
+  var fullp=up+'@'+dp;
+  function fillEmail(id,addr){
+    var el=document.getElementById(id);
+    if(!el)return;
+    el.textContent=addr;
+    var p=el.parentElement;
+    if(p&&p.classList.contains('c-ch')){
+      p.style.cursor='pointer';
+      p.onclick=function(){window.location.href='mailto:'+addr;};
+    }
+  }
+  fillEmail('email-gmail',full);
+  fillEmail('email-proton',fullp);
+  fillEmail('email-ml',full);
+  fillEmail('email-rgpd1',full);
+  fillEmail('email-rgpd2',full);
+})();
 </script>
 </body>
 </html>
