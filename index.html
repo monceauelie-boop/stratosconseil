@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KROMA Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Permanent+Marker&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: scène 3D fixe en fond, pages routées en hash, sections en couches de verre clair, marqueurs néon au feutre par dessus */
+:root{
+  color-scheme: light;
+  --bg:#FBF7FF;          /* blanc lilas */
+  --bg2:#F1EBFF;
+  --ink:#1D1438;         /* encre violette profonde pour le texte */
+  --ink2:#5A4F7A;
+  --line:#E2D8F7;
+  --pink:#FF2E93;
+  --cyan:#00C2F0;
+  --violet:#7B5CFF;
+  --lime:#9BE62A;
+  --orange:#FF8A1F;
+  --yellow:#FFD83D;
+  --glass:rgba(255,255,255,.62);
+  --glass-strong:rgba(255,255,255,.86);
+  --f-display:"Sora", ui-sans-serif, system-ui, sans-serif;
+  --f-marker:"Permanent Marker", "Comic Sans MS", cursive;
+  --f-mono:"JetBrains Mono", ui-monospace, monospace;
+  --r:22px;
+  --gutter:clamp(16px,4vw,48px);
+  --maxw:1200px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-display);font-size:16px;line-height:1.6;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--pink);color:#fff}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:8px}
+
+/* ---------- fond 3D ---------- */
+#scene{position:fixed;inset:0;z-index:0;pointer-events:none}
+#scene canvas{width:100%;height:100%;display:block}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(circle at 20% 10%,rgba(255,46,147,.14),transparent 40%),radial-gradient(circle at 85% 30%,rgba(0,194,240,.16),transparent 45%),radial-gradient(circle at 50% 95%,rgba(123,92,255,.14),transparent 45%)}
+#progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:60;background:linear-gradient(90deg,var(--pink),var(--violet),var(--cyan),var(--lime));box-shadow:0 0 12px var(--pink)}
+#cursor{position:fixed;left:-20px;top:-20px;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--pink);opacity:.55;pointer-events:none;z-index:80;transition:transform .15s,opacity .15s}
+#cursor.hot{transform:scale(1.6);opacity:.8}
+@media (hover:none){#cursor{display:none}}
+
+/* ---------- nav ---------- */
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;padding-inline:var(--gutter);padding-block:14px}
+.nav-in{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:18px;background:var(--glass-strong);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:999px;padding:10px 12px 10px 22px;box-shadow:0 10px 30px rgba(123,92,255,.10)}
+.logo{font-weight:800;font-size:20px;letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo b{font-family:var(--f-marker);font-weight:400;color:var(--pink);letter-spacing:0;text-shadow:0 0 10px rgba(255,46,147,.45)}
+.logo .dot{width:12px;height:12px;border-radius:50%;background:conic-gradient(var(--pink),var(--yellow),var(--lime),var(--cyan),var(--violet),var(--pink));animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.menu{display:flex;gap:4px;margin-left:auto;align-items:center;list-style:none;padding:0;margin-block:0}
+.menu a,.menu button.dd{font:600 14px var(--f-display);text-decoration:none;padding:9px 14px;border-radius:999px;border:0;background:none;color:var(--ink);cursor:pointer}
+.menu a:hover,.menu button.dd:hover,.menu a.on{background:var(--bg2);color:var(--violet)}
+.has-dd{position:relative}
+.dd-panel{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(6px);min-width:300px;background:var(--glass-strong);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:20px;padding:10px;box-shadow:0 20px 50px rgba(29,20,56,.14);opacity:0;visibility:hidden;transition:.22s}
+.has-dd:hover .dd-panel,.has-dd:focus-within .dd-panel{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.dd-panel a{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px}
+.dd-panel small{display:block;font-weight:400;color:var(--ink2);font-size:12px}
+.chip-dot{width:10px;height:10px;border-radius:50%;flex:none;box-shadow:0 0 10px currentColor}
+.btn{--c:var(--pink);display:inline-flex;align-items:center;gap:10px;font:700 15px var(--f-display);text-decoration:none;border:0;cursor:pointer;padding:14px 24px;border-radius:999px;color:#fff;background:var(--c);box-shadow:0 8px 24px color-mix(in srgb,var(--c) 45%,transparent),0 0 0 0 var(--c);transition:transform .2s,box-shadow .2s;will-change:transform}
+.btn:hover{box-shadow:0 12px 34px color-mix(in srgb,var(--c) 60%,transparent),0 0 0 4px color-mix(in srgb,var(--c) 25%,transparent)}
+.btn.ghost{background:var(--glass-strong);color:var(--ink);border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn.ghost:hover{box-shadow:6px 6px 0 var(--pink)}
+.btn.sm{padding:10px 18px;font-size:14px}
+.burger{display:none;margin-left:auto;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:10px 16px;font:700 14px var(--f-display);cursor:pointer}
+@media (max-width:980px){
+  .menu{display:none}
+  .burger{display:block}
+  .nav-cta{display:none}
+}
+#mobile{position:fixed;inset:0;z-index:70;background:var(--bg);padding:calc(24px + env(safe-area-inset-top,0px)) var(--gutter) 24px;display:flex;flex-direction:column;gap:6px;overflow:auto}
+#mobile a{font:800 28px var(--f-display);text-decoration:none;padding:6px 0}
+#mobile a.sub{font-size:18px;font-weight:600;color:var(--ink2);padding-left:18px}
+#mobile .close{align-self:flex-end;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:10px 16px;font:700 14px var(--f-display)}
+
+/* ---------- structure pages ---------- */
+main{position:relative;z-index:2}
+.page{animation:pageIn .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes pageIn{from{transform:translateY(24px);filter:blur(6px)}to{transform:none;filter:none}}
+.wipe{position:fixed;inset:0;z-index:65;pointer-events:none;background:linear-gradient(115deg,var(--pink),var(--violet) 40%,var(--cyan));clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+.wipe.go{animation:wipe .75s cubic-bezier(.7,0,.2,1)}
+@keyframes wipe{0%{clip-path:polygon(0 0,0 0,0 100%,0 100%)}45%{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}100%{clip-path:polygon(100% 0,100% 0,100% 100%,100% 100%)}}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gutter)}
+section{padding-block:clamp(56px,9vw,110px)}
+.eyebrow{font:500 12px var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--violet);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:28px;height:2px;background:currentColor;box-shadow:0 0 8px currentColor}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.05;letter-spacing:-.02em}
+h1{font-size:clamp(42px,8.2vw,108px);font-weight:800}
+h2{font-size:clamp(32px,5vw,62px);font-weight:800}
+h3{font-size:clamp(20px,2.2vw,26px);font-weight:700}
+p.lead{font-size:clamp(17px,1.6vw,21px);color:var(--ink2);max-width:62ch;font-weight:300}
+.marker{font-family:var(--f-marker);font-weight:400;letter-spacing:0;position:relative;display:inline-block;transform:rotate(-3deg);color:var(--c,var(--pink));text-shadow:0 0 18px color-mix(in srgb,var(--c,var(--pink)) 55%,transparent)}
+.scribble{position:relative;display:inline-block}
+.scribble svg{position:absolute;left:-4%;bottom:-.18em;width:108%;height:.42em;overflow:visible}
+.scribble path{fill:none;stroke:var(--c,var(--yellow));stroke-width:9;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 1.1s .35s cubic-bezier(.6,0,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.neon{color:#fff;-webkit-text-stroke:0;text-shadow:0 0 6px var(--c,var(--pink)),0 0 18px var(--c,var(--pink)),0 0 34px var(--c,var(--pink))}
+.stroke{color:transparent;-webkit-text-stroke:2px var(--ink)}
+.center{text-align:center}
+.center p.lead{margin-inline:auto}
+
+/* reveal au scroll : état de repos visible, simple décalage animé */
+.rv{transition:transform .9s cubic-bezier(.2,.8,.2,1),filter .9s}
+.rv.pre{transform:translateY(40px) rotateX(8deg);filter:blur(3px)}
+
+/* ---------- hero ---------- */
+.hero{padding-block:clamp(40px,7vw,90px) clamp(40px,6vw,70px)}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:end}
+.hero h1 .l{display:block}
+.hero h1 .marker{font-size:.92em}
+.hero .lead{margin-top:26px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.sticker{position:relative;background:var(--glass-strong);border:2px solid var(--ink);border-radius:26px;padding:22px;box-shadow:8px 8px 0 var(--violet);transform:rotate(2deg)}
+.sticker .tag{position:absolute;top:-18px;right:18px;font-family:var(--f-marker);background:var(--yellow);padding:4px 14px;border-radius:10px;transform:rotate(4deg);border:2px solid var(--ink)}
+.sticker ul{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:10px}
+.sticker li{display:flex;gap:10px;align-items:center;font-weight:600}
+.pulse{width:10px;height:10px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 0 var(--lime);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}.sticker{transform:none}}
+
+/* ticker */
+.ticker{overflow:hidden;border-block:2px solid var(--ink);background:var(--ink);color:#fff;transform:rotate(-1.5deg);margin-block:10px;padding-block:14px}
+.ticker .track{display:flex;gap:40px;width:max-content;animation:tick 26s linear infinite;font:800 clamp(22px,3vw,36px) var(--f-display);white-space:nowrap}
+.ticker .track span:nth-child(3n+1){color:var(--pink);text-shadow:0 0 12px var(--pink)}
+.ticker .track span:nth-child(3n+2){font-family:var(--f-marker);font-weight:400;color:var(--yellow)}
+.ticker .track span:nth-child(3n){color:var(--cyan);text-shadow:0 0 12px var(--cyan)}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* cartes services */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px;margin-top:44px;perspective:1000px}
+.card{--c:var(--pink);position:relative;display:flex;flex-direction:column;gap:12px;text-decoration:none;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);padding:26px;min-height:270px;transform-style:preserve-3d;transition:transform .25s ease,box-shadow .25s,border-color .25s;overflow:hidden}
+.card::after{content:"";position:absolute;inset:auto -30% -60% auto;width:220px;height:220px;border-radius:50%;background:var(--c);filter:blur(60px);opacity:.28;transition:opacity .3s}
+.card:hover{border-color:var(--c);box-shadow:0 0 0 2px var(--c),0 18px 50px color-mix(in srgb,var(--c) 35%,transparent)}
+.card:hover::after{opacity:.55}
+.card .ico{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--c);color:#fff;box-shadow:0 0 22px var(--c);transform:translateZ(40px)}
+.card h3{transform:translateZ(30px)}
+.card p{margin:0;color:var(--ink2);transform:translateZ(20px)}
+.card .from{margin-top:auto;font:500 13px var(--f-mono);color:var(--ink);transform:translateZ(25px)}
+.card .from b{font-family:var(--f-display);font-size:22px;color:var(--c)}
+.card .arrow{position:absolute;top:22px;right:22px;font-size:22px;transition:transform .25s}
+.card:hover .arrow{transform:translate(4px,-4px) rotate(-8deg)}
+
+/* défilement horizontal épinglé */
+.hscroll{position:relative;height:320vh;padding:0}
+.hs-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;gap:34px}
+.hs-track{display:flex;gap:28px;padding-inline:var(--gutter);will-change:transform}
+.step{--c:var(--pink);flex:none;width:min(80vw,420px);min-height:320px;background:var(--glass-strong);border:2px solid var(--ink);border-radius:28px;padding:30px;box-shadow:10px 10px 0 var(--c);display:flex;flex-direction:column;gap:14px}
+.step .n{font-family:var(--f-marker);font-size:64px;line-height:1;color:var(--c);text-shadow:0 0 16px color-mix(in srgb,var(--c) 50%,transparent)}
+.step p{margin:0;color:var(--ink2)}
+@media (max-width:760px),(prefers-reduced-motion:reduce){
+  .hscroll{height:auto;padding-block:70px}
+  .hs-sticky{position:static;height:auto}
+  .hs-track{flex-direction:column;transform:none!important}
+  .step{width:100%}
+}
+
+/* bandeau GEO */
+.geo-band{border-radius:36px;padding:clamp(28px,5vw,60px);background:linear-gradient(120deg,#fff 0%,#F6EEFF 50%,#E9FAFF 100%);border:2px solid var(--ink);box-shadow:12px 12px 0 var(--cyan);display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+.chat{background:var(--ink);color:#fff;border-radius:22px;padding:20px;font-size:14px;display:grid;gap:12px;min-width:0}
+.bubble{padding:12px 14px;border-radius:16px;max-width:92%}
+.bubble.q{background:#3A2E63;justify-self:end}
+.bubble.a{background:#fff;color:var(--ink)}
+.bubble.a mark{background:none;color:var(--pink);font-weight:700;text-shadow:0 0 10px rgba(255,46,147,.35)}
+.typing::after{content:"▍";animation:blink 1s steps(1) infinite;color:var(--cyan)}
+@keyframes blink{50%{opacity:0}}
+@media (max-width:860px){.geo-band{grid-template-columns:1fr}}
+
+/* page service */
+.svc-hero{padding-block:clamp(40px,6vw,80px) 20px}
+.crumbs{font:500 13px var(--f-mono);color:var(--ink2);display:flex;gap:8px;flex-wrap:wrap}
+.crumbs a{text-decoration:none;color:var(--violet)}
+.svc-hero h1{font-size:clamp(40px,7vw,92px);margin-top:18px}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:22px;margin-top:40px;align-items:stretch}
+.tier{--c:var(--pink);position:relative;background:var(--glass-strong);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;gap:14px;transition:transform .25s,box-shadow .25s}
+.tier:hover{transform:translateY(-6px);box-shadow:0 20px 50px color-mix(in srgb,var(--c) 28%,transparent)}
+.tier.star{border:2px solid var(--c);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 14%,transparent),0 0 40px color-mix(in srgb,var(--c) 30%,transparent)}
+.tier .badge{position:absolute;top:-14px;left:24px;font-family:var(--f-marker);background:var(--c);color:#fff;padding:3px 14px;border-radius:10px;transform:rotate(-3deg);box-shadow:0 0 16px var(--c)}
+.tier .name{font:800 26px var(--f-display)}
+.tier .desc{color:var(--ink2);margin:0;font-size:15px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price b{font:800 clamp(34px,4vw,44px) var(--f-display);color:var(--c);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.price span{font:500 13px var(--f-mono);color:var(--ink2)}
+.feats{list-style:none;padding:0;margin:0;display:grid;gap:9px;font-size:15px}
+.feats li{display:grid;grid-template-columns:20px 1fr;gap:8px}
+.feats li::before{content:"✦";color:var(--c)}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:10px}
+.pill{font:500 12px var(--f-mono);padding:5px 10px;border-radius:999px;background:var(--bg2);color:var(--ink)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.process{counter-reset:s;list-style:none;padding:0;margin:26px 0 0;display:grid;gap:14px}
+.process li{counter-increment:s;display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start;background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:16px}
+.process li::before{content:counter(s);font-family:var(--f-marker);font-size:30px;line-height:1;color:var(--c,var(--pink));text-align:center;padding-top:4px}
+.process b{display:block}
+.process span{color:var(--ink2);font-size:15px}
+.note{background:var(--yellow);border:2px solid var(--ink);border-radius:18px;padding:18px 20px;transform:rotate(-1deg);box-shadow:6px 6px 0 var(--ink);font-weight:600}
+.opts{display:grid;gap:10px;margin-top:20px}
+.opt{display:flex;justify-content:space-between;gap:14px;padding:14px 16px;border-radius:14px;background:var(--glass-strong);border:1px dashed var(--c,var(--pink))}
+.opt b{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* tarifs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
+.tab{font:700 14px var(--f-display);padding:10px 18px;border-radius:999px;border:2px solid var(--ink);background:var(--glass-strong);cursor:pointer;color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff;box-shadow:0 0 0 3px var(--pink)}
+.ptable{margin-top:26px;overflow-x:auto;border-radius:var(--r);border:1px solid var(--line);background:var(--glass-strong)}
+.ptable table{width:100%;border-collapse:collapse;min-width:640px}
+.ptable th,.ptable td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.ptable th{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ink2);background:var(--bg2)}
+.ptable td.p{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ptable tr:hover td{background:rgba(255,46,147,.05)}
+.svc-tag{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.packs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:22px;margin-top:34px}
+.pack{--c:var(--violet);border-radius:28px;padding:28px;color:#fff;background:linear-gradient(140deg,var(--c),color-mix(in srgb,var(--c) 55%,var(--pink)));box-shadow:0 20px 50px color-mix(in srgb,var(--c) 40%,transparent);display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.pack::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.25),transparent 30%);animation:spin 7s linear infinite}
+.pack>*{position:relative}
+.pack .old{text-decoration:line-through;opacity:.75;font-variant-numeric:tabular-nums}
+.pack .big{font:800 44px var(--f-display);font-variant-numeric:tabular-nums}
+.pack .save{font-family:var(--f-marker);background:#fff;color:var(--c);padding:2px 12px;border-radius:10px;align-self:flex-start;transform:rotate(-3deg)}
+.pack ul{margin:0;padding-left:18px}
+
+/* FAQ */
+.faq-tools{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:10px;background:var(--glass-strong);border:2px solid var(--ink);border-radius:999px;padding:4px 18px}
+.search input{flex:1;border:0;background:none;font:500 16px var(--f-display);padding:10px 0;color:var(--ink);min-width:0}
+.search input:focus{outline:none}
+.faq{display:grid;gap:12px;margin-top:26px}
+.qa{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.qa[open]{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,46,147,.14)}
+.qa summary{list-style:none;cursor:pointer;padding:20px 22px;font-weight:700;display:flex;gap:16px;align-items:center;justify-content:space-between}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary .plus{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--bg2);transition:transform .3s,background .3s;font-weight:800}
+.qa[open] summary .plus{transform:rotate(45deg);background:var(--pink);color:#fff}
+.qa .ans{padding:0 22px 22px;color:var(--ink2);max-width:75ch}
+.qa .cat{font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--violet);display:block;margin-bottom:4px}
+.empty{padding:30px;text-align:center;color:var(--ink2)}
+
+/* formulaires */
+.form-card{background:var(--glass-strong);backdrop-filter:blur(14px);border:2px solid var(--ink);border-radius:30px;padding:clamp(22px,4vw,40px);box-shadow:12px 12px 0 var(--pink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.field .lbl{font:600 14px var(--f-display)}
+.field input,.field select,.field textarea{font:400 16px var(--f-display);color:var(--ink);background:#fff;border:2px solid var(--line);border-radius:14px;padding:13px 15px;transition:border-color .2s,box-shadow .2s;width:100%}
+.field textarea{min-height:130px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 4px rgba(123,92,255,.18)}
+.field.err input,.field.err select,.field.err textarea{border-color:var(--pink)}
+.field .msg{font-size:13px;color:var(--pink);min-height:0}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{cursor:pointer}
+.checks input{position:absolute;opacity:0;pointer-events:none}
+.checks span{display:inline-block;padding:9px 14px;border-radius:999px;border:2px solid var(--line);font:600 14px var(--f-display);background:#fff;transition:.2s}
+.checks input:checked+span{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:0 0 0 3px var(--cyan)}
+.checks input:focus-visible+span{outline:3px solid var(--cyan);outline-offset:2px}
+.form-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:22px}
+.small{font-size:13px;color:var(--ink2)}
+.success{text-align:center;padding:30px 10px;display:grid;gap:14px;justify-items:center}
+.success .big{font-family:var(--f-marker);font-size:clamp(40px,6vw,64px);color:var(--lime);text-shadow:0 0 18px rgba(155,230,42,.6);transform:rotate(-3deg)}
+.contact-side{display:grid;gap:16px}
+.cinfo{background:var(--glass-strong);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:6px}
+.cinfo .v{font-weight:700;font-size:18px;user-select:all;overflow-wrap:anywhere}
+.copy{justify-self:start;font:600 13px var(--f-display);border:2px solid var(--ink);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer}
+
+/* calendrier */
+.booking{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:start}
+@media (max-width:900px){.booking{grid-template-columns:1fr}}
+.cal{background:var(--glass-strong);backdrop-filter:blur(14px);border:2px solid var(--ink);border-radius:30px;padding:clamp(18px,3vw,30px);box-shadow:12px 12px 0 var(--cyan)}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.cal-head h3{text-transform:capitalize}
+.navb{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:#fff;cursor:pointer;font:800 18px var(--f-display);color:var(--ink)}
+.navb:disabled{opacity:.3;cursor:not-allowed}
+.dow,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.dow span{text-align:center;font:500 12px var(--f-mono);color:var(--ink2);padding-bottom:6px}
+.day{aspect-ratio:1;max-width:100%;border-radius:14px;border:2px solid transparent;background:#fff;font:700 15px var(--f-display);cursor:pointer;color:var(--ink);position:relative;transition:transform .15s,background .2s,box-shadow .2s;font-variant-numeric:tabular-nums}
+.day:hover:not(:disabled){transform:scale(1.08);border-color:var(--violet)}
+.day:disabled{background:transparent;color:#C4BADB;cursor:not-allowed}
+.day.today::after{content:"";position:absolute;bottom:6px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--pink)}
+.day.sel{background:var(--pink);color:#fff;box-shadow:0 0 18px var(--pink)}
+.day.blank{visibility:hidden}
+.slots-box{display:grid;gap:14px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.slot{padding:11px 6px;border-radius:12px;border:2px solid var(--line);background:#fff;font:700 14px var(--f-mono);cursor:pointer;color:var(--ink);transition:.15s}
+.slot:hover:not(:disabled){border-color:var(--cyan);box-shadow:0 0 12px rgba(0,194,240,.35)}
+.slot:disabled{text-decoration:line-through;opacity:.4;cursor:not-allowed}
+.slot.sel{background:var(--cyan);border-color:var(--cyan);color:#fff;box-shadow:0 0 16px var(--cyan)}
+.recap{background:var(--ink);color:#fff;border-radius:18px;padding:16px 18px;display:grid;gap:4px}
+.recap b{color:var(--yellow)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--ink2);margin-top:14px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+/* à propos */
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:26px;margin-top:40px}
+.member{--c:var(--pink);background:var(--glass-strong);border:2px solid var(--ink);border-radius:30px;padding:28px;box-shadow:10px 10px 0 var(--c);display:grid;gap:14px}
+.avatar{width:120px;height:120px;border-radius:50%;border:3px dashed var(--c);display:grid;place-items:center;font-family:var(--f-marker);font-size:18px;color:var(--c);background:color-mix(in srgb,var(--c) 8%,#fff);text-align:center;line-height:1.1}
+.ph{background:repeating-linear-gradient(-45deg,var(--bg2),var(--bg2) 10px,#fff 10px,#fff 20px);border-radius:10px;padding:2px 8px;color:var(--ink2);font-style:italic}
+.values{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:18px;margin-top:34px}
+.val{padding:22px;border-radius:22px;background:var(--glass);border:1px solid var(--line)}
+.val .marker{font-size:28px}
+
+/* CTA et footer */
+.cta{border-radius:40px;padding:clamp(34px,6vw,80px);background:var(--ink);color:#fff;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:-50%;background:radial-gradient(circle at 30% 40%,rgba(255,46,147,.45),transparent 35%),radial-gradient(circle at 70% 60%,rgba(0,194,240,.45),transparent 35%);animation:drift 12s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate(8%,-6%) rotate(20deg)}}
+.cta>*{position:relative}
+.cta p{color:#D9D0F5;max-width:55ch;margin:18px auto 30px}
+footer{position:relative;z-index:2;padding-block:50px 40px;padding-inline:var(--gutter)}
+.foot{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;border-top:2px solid var(--ink);padding-top:34px}
+.foot h4{margin:0 0 10px;font:500 12px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}
+.foot a{display:block;text-decoration:none;padding:3px 0;color:var(--ink2)}
+.foot a:hover{color:var(--pink)}
+.demo{display:inline-block;margin-top:14px;font:500 12px var(--f-mono);background:var(--yellow);padding:3px 10px;border-radius:8px}
+@media (max-width:760px){.foot{grid-template-columns:1fr 1fr}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;z-index:90;transition:transform .35s;font-weight:600}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .scribble path{stroke-dashoffset:0}
+  .rv.pre{transform:none;filter:none}
+}
+</style>
+
+</head>
+<body>
+<div id="scene" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div id="progress" aria-hidden="true"></div>
+<div id="cursor" aria-hidden="true"></div>
+<div class="wipe" id="wipe" aria-hidden="true"></div>
+
+<header class="nav">
+  <nav class="nav-in" aria-label="Navigation principale">
+    <a class="logo" href="#accueil"><span class="dot"></span>KROMA <b>studio</b></a>
+    <ul class="menu" id="menu">
+      <li class="has-dd">
+        <button class="dd" type="button" aria-haspopup="true">Services ▾</button>
+        <div class="dd-panel" id="ddPanel"></div>
+      </li>
+      <li><a href="#tarifs" data-r="tarifs">Tarifs</a></li>
+      <li><a href="#apropos" data-r="apropos">À propos</a></li>
+      <li><a href="#faq" data-r="faq">FAQ</a></li>
+      <li><a href="#contact" data-r="contact">Contact</a></li>
+    </ul>
+    <a class="btn sm nav-cta" href="#rdv">Réserver un appel</a>
+    <button class="burger" id="burger" type="button" aria-controls="mobile">Menu</button>
+  </nav>
+</header>
+
+<div id="mobile" hidden>
+  <button class="close" id="closeMobile" type="button">Fermer</button>
+</div>
+
+<main id="app" tabindex="-1"></main>
+
+<footer>
+  <div class="foot">
+    <div>
+      <a class="logo" href="#accueil" style="padding:0"><span class="dot"></span>KROMA <b>studio</b></a>
+      <p class="small" style="max-width:34ch;margin-top:12px">Studio de croissance à Paris. Vidéo, web, SEO et visibilité IA, pilotés par la donnée.</p>
+      <span class="demo">Version de démonstration</span>
+    </div>
+    <div><h4>Services</h4><div id="footSvc"></div></div>
+    <div><h4>Studio</h4><a href="#apropos">À propos</a><a href="#tarifs">Tarifs</a><a href="#faq">FAQ</a></div>
+    <div><h4>Parler</h4><a href="#contact">Formulaire</a><a href="#rdv">Réserver un appel</a><a href="#contact" data-scan="1">Scan IA gratuit</a></div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =========================================================
+   DONNÉES
+   ========================================================= */
+const ICON = {
+  motion:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>',
+  web:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>',
+  seo:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
+  geo:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5.5L20 11l-5.5 2.5L12 19l-2.5-5.5L4 11l5.5-2.5z"/></svg>',
+  strategie:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M6 16l4-5 3 3 5-7"/></svg>'
+};
+
+const SERVICES = {
+  motion:{
+    name:'Motion design', short:'Vidéo et motion', c:'var(--pink)', hex:0xFF2E93, marker:'ça bouge',
+    card:'Vidéos courtes, explicatives et films de marque animés en 2D et 3D.',
+    title:['Des vidéos qui','arrêtent le','scroll'], mk:2,
+    lead:'Script, direction artistique, animation, voix et son. On produit des vidéos pensées pour la diffusion : formats verticaux, sous titrage, déclinaisons par réseau.',
+    tiers:[
+      {name:'Spark',price:'690 €',unit:'HT',desc:'15 à 30 secondes, format vertical.',feats:['1 vidéo, 1 format','Musique libre de droits','Sous titrage inclus','2 allers retours'],meta:['5 jours ouvrés']},
+      {name:'Pulse',price:'2 490 €',unit:'HT',desc:'45 à 90 secondes, vidéo explicative ou publicitaire.',feats:['Script et storyboard','Voix off IA ou comédien','3 formats : 16:9, 9:16, 1:1','2 allers retours'],meta:['2 semaines'],star:true},
+      {name:'Orbit',price:'5 900 €',unit:'HT',desc:'90 à 120 secondes, film de marque 2D ou 3D.',feats:['Direction artistique complète','Sound design sur mesure','6 déclinaisons courtes','Fichiers sources, 3 allers retours'],meta:['4 semaines']},
+      {name:'Flux',price:'1 990 €',unit:'HT / mois',desc:'Abonnement contenu : 4 vidéos courtes chaque mois.',feats:['Calendrier éditorial','4 vidéos Spark par mois','Adaptation par réseau','Engagement 3 mois'],meta:['497 € la vidéo']}
+    ],
+    process:[['Brief de 30 minutes','Objectif, cible, diffusion et indicateurs de réussite.'],['Script et moodboard','Validation écrite, acompte de 50 %.'],['Storyboard ou styleframes','Vous voyez le rendu avant l’animation.'],['Production','Animation, voix, sound design.'],['V1, retours, V2','Retours groupés dans un outil de review, puis livraison finale.']],
+    opts:[['Aller retour supplémentaire','150 €'],['Format supplémentaire','120 €'],['Comédien voix off professionnel','au réel + 15 %'],['Livraison express 48 h','+ 30 %']]
+  },
+  web:{
+    name:'Sites web', short:'Sites web', c:'var(--cyan)', hex:0x00C2F0, marker:'en 3D',
+    card:'Landing pages, sites vitrines, sites immersifs WebGL et boutiques Shopify.',
+    title:['Des sites qui','se vivent','en 3D'], mk:2,
+    lead:'Design sur mesure, animations au scroll, calendrier de prise d’appel, SEO technique dès la première ligne. Vous gardez la main sur vos contenus.',
+    tiers:[
+      {name:'Launch',price:'1 890 €',unit:'HT',desc:'Landing page orientée conversion.',feats:['One page sur mesure','Formulaire et prise d’appel','SEO technique de base','Tracking GA4'],meta:['10 jours ouvrés']},
+      {name:'Nexus',price:'4 900 €',unit:'HT',desc:'Site vitrine de 5 à 8 pages.',feats:['Animations au scroll','CMS éditable et blog','Calendrier de prise d’appel','SEO on page et formation 1 h'],meta:['3 à 5 semaines'],star:true},
+      {name:'Hyperspace',price:'dès 9 900 €',unit:'HT',desc:'Site immersif 3D et WebGL.',feats:['10 pages et plus','Motion design intégré','Microinteractions','Multilingue en option'],meta:['6 à 8 semaines']},
+      {name:'Store',price:'dès 6 500 €',unit:'HT',desc:'Boutique Shopify jusqu’à 50 produits.',feats:['Thème personnalisé','Paiement configuré','Emails transactionnels','Formation à la gestion'],meta:['5 à 7 semaines']}
+    ],
+    process:[['Atelier de cadrage','Objectifs, arborescence, références, contenus.'],['Zoning et maquettes','Desktop et mobile, acompte de 40 %.'],['Développement','Sur un lien de préproduction que vous suivez en direct.'],['Recette','Vitesse, responsive, formulaires, RGPD, SEO technique.'],['Mise en ligne','Formation, passage en maintenance Care.']],
+    opts:[['Maintenance Care (hébergement, mises à jour, 1 h de modifications)','89 € / mois'],['Maintenance Care+ (3 h de modifications, rapport mensuel)','249 € / mois'],['Rédaction des contenus, 5 pages','450 €']]
+  },
+  seo:{
+    name:'SEO', short:'Référencement SEO', c:'var(--lime)', hex:0x9BE62A, marker:'trouvé',
+    card:'Audit technique et sémantique, contenus optimisés, netlinking, suivi mensuel.',
+    title:['Être','trouvé','sur Google'], mk:1,
+    lead:'On part d’un audit précis, puis on travaille chaque mois vos contenus, votre technique et votre popularité. Résultats mesurés, jamais promis au hasard.',
+    tiers:[
+      {name:'Local Boost',price:'490 €',unit:'HT',desc:'Visibilité locale en une fois.',feats:['Fiche Google Business Profile optimisée','20 citations annuaires','Stratégie avis clients'],meta:['1 semaine']},
+      {name:'Audit SEO 360',price:'1 490 €',unit:'HT',desc:'Diagnostic complet et plan d’action.',feats:['Crawl, Core Web Vitals, indexation','Mots clés et intentions','Concurrence et backlinks','Plan 90 jours présenté en visio'],meta:['Livré en 10 jours','Déduit si abonnement']},
+      {name:'Croissance',price:'990 €',unit:'HT / mois',desc:'Accompagnement mensuel.',feats:['Suivi de 50 mots clés','4 contenus optimisés par mois','Correctifs techniques','Rapport mensuel'],meta:['Engagement 6 mois'],star:true},
+      {name:'Domination',price:'2 190 €',unit:'HT / mois',desc:'Pour les marchés concurrentiels.',feats:['Suivi de 150 mots clés','8 contenus par mois','Netlinking inclus (500 € de liens)','Call mensuel'],meta:['Engagement 6 mois']}
+    ],
+    process:[['Accès','Search Console, GA4 et CMS dès la signature.'],['Audit','Livré sous 10 jours, restitution de 45 minutes.'],['Mois 1','Correctifs techniques prioritaires.'],['Mois 2 et suivants','Contenus, maillage et liens.'],['Rapport mensuel','Positions, trafic, conversions, actions réalisées.']],
+    opts:[['L’audit est déduit de la première mensualité si vous signez sous 30 jours','offert']]
+  },
+  geo:{
+    name:'Visibilité IA', short:'Visibilité IA (GEO)', c:'var(--violet)', hex:0x7B5CFF, marker:'cité',
+    card:'Être cité par ChatGPT, Gemini, Perplexity et Claude quand vos clients posent la question.',
+    title:['Être','cité','par les IA'], mk:1,
+    lead:'Vos clients demandent désormais conseil à ChatGPT. On mesure votre part de voix dans les réponses des IA, puis on travaille ce qui les fait vous citer.',
+    tiers:[
+      {name:'Scan IA',price:'Gratuit',unit:'',desc:'Le point de départ, livré en 48 h.',feats:['20 requêtes testées','ChatGPT, Gemini, Perplexity, Claude','Score de présence','3 recommandations, visio 20 min'],meta:['Sans engagement']},
+      {name:'Audit GEO',price:'2 400 €',unit:'HT',desc:'Cartographie complète de votre présence IA.',feats:['100 requêtes sur 5 moteurs','Part de voix face à 3 concurrents','Sources citées par les IA','Plan d’action priorisé'],meta:['2 semaines'],star:true},
+      {name:'Setup GEO',price:'3 900 €',unit:'HT',desc:'Mise en place technique et éditoriale.',feats:['Données structurées Schema.org','Fichier llms.txt','Pages réponses FAQ','Fiches entités et annuaires'],meta:['3 semaines']},
+      {name:'Suivi GEO',price:'1 490 €',unit:'HT / mois',desc:'Monitoring et actions chaque mois.',feats:['Suivi des 100 requêtes','4 contenus citables par mois','Actions de citations sur sites tiers','Rapport de part de voix'],meta:['Engagement 6 mois']}
+    ],
+    process:[['Scan gratuit','Demandé depuis le formulaire, livré en 48 h.'],['Audit','Sélection des requêtes avec vous, tests sur chaque moteur.'],['Setup','Technique et contenus sur 3 semaines.'],['Suivi','Même panel chaque mois pour comparer.'],['Rapport','Évolution de la part de voix et prochaines actions.']],
+    opts:[['Duo SEO + GEO (Croissance + Suivi GEO)','2 290 € / mois']]
+  },
+  strategie:{
+    name:'Stratégie et performance', short:'Stratégie digitale', c:'var(--orange)', hex:0xFF8A1F, marker:'mesuré',
+    card:'Diagnostic, plan 90 jours, tracking, tableaux de bord et direction marketing externalisée.',
+    title:['Une stratégie','et des chiffres','mesurés'], mk:2,
+    lead:'Une culture média grand public, des méthodes de grand groupe, au format d’une PME. On définit le plan, on installe la mesure, on pilote chaque mois.',
+    tiers:[
+      {name:'Diagnostic Flash',price:'890 €',unit:'HT',desc:'Le regard extérieur, vite.',feats:['Atelier de 2 h','Audit des canaux existants','10 recommandations priorisées'],meta:['Déduit du Plan 90 jours']},
+      {name:'Setup Tracking',price:'990 €',unit:'HT',desc:'La mesure avant tout.',feats:['Plan de marquage','GA4 et Google Tag Manager','Bandeau cookies conforme','Dashboard Looker Studio'],meta:['1 semaine']},
+      {name:'Plan 90 jours',price:'3 490 €',unit:'HT',desc:'Votre feuille de route complète.',feats:['Personas et parcours client','Mix canaux et budget media','Calendrier éditorial','Indicateurs et objectifs'],meta:['3 semaines'],star:true},
+      {name:'Pilotage Performance',price:'1 290 €',unit:'HT / mois',desc:'Le suivi qui fait progresser.',feats:['Dashboard vivant','Rapport mensuel commenté','Tests A/B recommandés','Call mensuel'],meta:['Mensuel']},
+      {name:'Growth Partner',price:'2 900 €',unit:'HT / mois',desc:'Direction marketing à temps partagé.',feats:['4 jours par mois','Pilotage de vos prestataires','Comité mensuel'],meta:['Mensuel']}
+    ],
+    process:[['Diagnostic Flash','La porte d’entrée, déductible ensuite.'],['Setup Tracking','En semaine 1, pour mesurer dès le départ.'],['Plan 90 jours','Livré en semaine 3 avec la feuille de route.'],['Exécution','Vidéo, site, SEO ou GEO selon le plan.'],['Pilotage mensuel','3 indicateurs clés : leads, coût par lead, chiffre d’affaires attribué.']],
+    opts:[]
+  }
+};
+const ORDER = ['motion','web','seo','geo','strategie'];
+
+const PACKS = [
+  {name:'Lancement',c:'var(--pink)',items:['Landing page Launch','Vidéo Pulse','Audit SEO 360','Setup Tracking'],old:'6 860 €',price:'5 490 €',save:'moins 20 %'},
+  {name:'Visibilité Totale',c:'var(--violet)',items:['Site vitrine Nexus','Audit GEO','3 mois Duo SEO + GEO'],old:'14 170 €',price:'11 900 €',save:'moins 16 %'},
+  {name:'Signature',c:'var(--cyan)',items:['Site immersif Hyperspace','Film de marque Orbit','Setup GEO','Setup Tracking'],old:'20 690 €',price:'16 900 €',save:'moins 18 %'}
+];
+
+const FAQS = [
+  ['Général','Qui êtes vous ?','KROMA est un studio parisien fondé par deux associés, avec une expérience du marketing digital au sein d’un groupe média national. On réunit création (vidéo, web) et visibilité (SEO, IA, stratégie) pour que vous n’ayez qu’un seul interlocuteur.'],
+  ['Général','Vous travaillez avec quels types d’entreprises ?','PME, marques en ligne, cabinets, indépendants premium et startups. Nos offres sont pensées pour des budgets marketing de 1 000 à 8 000 € HT par mois, mais on intervient aussi sur des projets ponctuels.'],
+  ['Général','Utilisez vous l’intelligence artificielle ?','Oui, pour produire plus vite et plus loin : animation, voix, déclinaisons, analyse. Chaque livrable reste dirigé, contrôlé et validé par nous. On vous indique toujours ce qui a été généré.'],
+  ['Tarifs','Vos prix sont ils HT ?','Oui, tous les prix affichés sont hors taxes. Chaque devis est détaillé et à périmètre fermé : livrables, allers retours et délais sont écrits.'],
+  ['Tarifs','Comment se passe le paiement ?','Acompte de 50 % pour la vidéo et la stratégie, 40 / 40 / 20 pour le web. Les abonnements sont prélevés en début de mois. Paiement en 3 fois possible sur les packs.'],
+  ['Tarifs','Y a t il un engagement sur les abonnements ?','3 mois pour l’abonnement vidéo Flux, 6 mois pour le SEO et le GEO car les résultats demandent ce délai. Ensuite, résiliation avec 30 jours de préavis.'],
+  ['Motion design','Combien d’allers retours sont inclus ?','2 allers retours pour Spark et Pulse, 3 pour Orbit. Un aller retour supplémentaire coûte 150 €.'],
+  ['Motion design','Qui possède les droits sur la vidéo ?','Vous, après paiement intégral. La cession des droits est précisée dans le devis : supports, durée, territoire.'],
+  ['Sites web','Pourrai je modifier mon site moi même ?','Oui. Les sites Launch et Nexus sont livrés avec un CMS et une formation d’une heure. Les sites Hyperspace sont codés sur mesure et se modifient via notre maintenance.'],
+  ['Sites web','Le site est il optimisé pour Google ?','Le SEO technique est inclus dans toutes nos offres web : vitesse, balises, structure, données structurées, version mobile.'],
+  ['SEO et IA','Quelle différence entre SEO et GEO ?','Le SEO travaille votre place dans les résultats Google. Le GEO travaille votre présence dans les réponses des IA comme ChatGPT, Gemini, Perplexity ou Claude. Les deux se complètent.'],
+  ['SEO et IA','Pouvez vous garantir la première place ?','Non, et personne ne le peut honnêtement. Aucune agence ne contrôle Google ni les réponses des IA. On s’engage sur la méthode, la mesure mensuelle et la transparence des actions.'],
+  ['SEO et IA','En combien de temps voit on des résultats ?','Les premiers effets SEO apparaissent généralement entre 3 et 6 mois. Pour la visibilité IA, les premiers signaux se mesurent aussi entre 3 et 6 mois de travail régulier.'],
+  ['Contact','Comment se passe l’appel de découverte ?','20 minutes au téléphone, gratuit et sans engagement. On comprend votre besoin, puis vous recevez une proposition sous 48 h.']
+];
+
+/* =========================================================
+   OUTILS
+   ========================================================= */
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc = s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)}
+function scribble(text,c){return `<span class="scribble" style="--c:${c}">${text}<svg viewBox="0 0 300 30" preserveAspectRatio="none" aria-hidden="true"><path d="M4 18 C 60 6, 110 28, 160 14 S 250 8, 296 16"/></svg></span>`}
+
+/* =========================================================
+   VUES
+   ========================================================= */
+function svcCard(k){
+  const s=SERVICES[k];
+  const from=s.tiers.find(t=>/\d/.test(t.price));
+  return `<a class="card rv tilt" href="#${k}" style="--c:${s.c}">
+    <span class="arrow">↗</span>
+    <span class="ico">${ICON[k]}</span>
+    <h3>${s.name}</h3>
+    <p>${s.card}</p>
+    <span class="from">à partir de <b>${from.price.replace('dès ','')}</b> ${from.unit}</span>
+  </a>`;
+}
+function cta(title='Parlons de votre projet', marker='20 minutes', text='Un appel téléphonique gratuit pour comprendre votre besoin. Proposition détaillée sous 48 h.'){
+  return `<section><div class="wrap"><div class="cta rv">
+    <span class="eyebrow" style="color:var(--yellow)">Prochaine étape</span>
+    <h2 style="margin-top:14px">${title}<br><span class="marker" style="--c:var(--yellow)">${marker}</span> suffisent</h2>
+    <p>${text}</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn mag" href="#rdv">Réserver un appel</a>
+      <a class="btn mag" style="--c:var(--cyan)" href="#contact">Écrire un message</a>
+    </div>
+  </div></div></section>`;
+}
+
+function viewHome(){
+  const tick=['Motion design','qui arrête le scroll','Sites 3D','SEO','cité par les IA','Stratégie','Performance','néons compris'];
+  return `
+  <section class="hero"><div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Studio de croissance · Paris</span>
+      <h1 style="margin-top:20px">
+        <span class="l">Vu. Compris.</span>
+        <span class="l">${scribble('Choisi','var(--yellow)')} <span class="marker" style="--c:var(--pink)">partout</span></span>
+      </h1>
+      <p class="lead">Vidéo et motion design, sites web immersifs, SEO et visibilité dans ChatGPT. Un seul studio pour être vu sur Google, dans les IA et sur les réseaux.</p>
+      <div class="hero-ctas">
+        <a class="btn mag" href="#rdv">Réserver un appel gratuit</a>
+        <a class="btn ghost mag" href="#services">Voir les services</a>
+      </div>
+    </div>
+    <aside class="sticker" aria-label="Disponibilités">
+      <span class="tag">Dispo !</span>
+      <strong>Ce mois ci au studio</strong>
+      <ul>
+        <li><span class="pulse"></span>2 créneaux projet ouverts</li>
+        <li><span class="pulse" style="background:var(--cyan)"></span>Scan IA gratuit en 48 h</li>
+        <li><span class="pulse" style="background:var(--pink)"></span>Proposition sous 48 h</li>
+      </ul>
+    </aside>
+  </div></section>
+
+  <div class="ticker" aria-hidden="true"><div class="track">${[...tick,...tick].map(t=>`<span>${t} ✦</span>`).join('')}</div></div>
+
+  <section><div class="wrap">
+    <span class="eyebrow">Ce qu’on fait</span>
+    <h2 style="margin-top:14px">Cinq expertises, <span class="marker" style="--c:var(--violet)">un seul</span> studio</h2>
+    <div class="cards">${ORDER.map(svcCard).join('')}</div>
+  </div></section>
+
+  <section class="hscroll" id="hs"><div class="hs-sticky">
+    <div class="wrap"><span class="eyebrow">Comment on travaille</span>
+    <h2 style="margin-top:14px">De l’appel à la <span class="marker" style="--c:var(--cyan)">mise en ligne</span></h2></div>
+    <div class="hs-track" id="hsTrack">
+      ${[['Appel de 20 minutes','On qualifie ensemble votre besoin, votre budget et vos délais.','var(--pink)'],
+         ['Proposition sous 48 h','Un devis à périmètre fermé, avec une option recommandée.','var(--yellow)'],
+         ['Lancement','Signature en ligne, acompte, accès partagés, canal dédié.','var(--lime)'],
+         ['Production par jalons','Chaque étape est validée par écrit avant la suivante.','var(--cyan)'],
+         ['Livraison et mesure','Mise en ligne, suivi des résultats, revue trimestrielle.','var(--violet)']]
+        .map((s,i)=>`<article class="step" style="--c:${s[2]}"><span class="n">${i+1}</span><h3>${s[0]}</h3><p>${s[1]}</p></article>`).join('')}
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="geo-band rv">
+      <div>
+        <span class="eyebrow">Nouveau canal</span>
+        <h2 style="margin-top:14px">Vos clients demandent à <span class="marker" style="--c:var(--violet)">ChatGPT</span></h2>
+        <p class="lead" style="margin-top:16px">Quand un prospect demande une recommandation à une IA, votre marque apparaît elle dans la réponse ? Notre scan gratuit teste 20 requêtes sur 4 moteurs.</p>
+        <div class="hero-ctas"><a class="btn mag" style="--c:var(--violet)" href="#contact" data-scan="1">Demander mon scan gratuit</a><a class="btn ghost mag" href="#geo">L’offre GEO</a></div>
+      </div>
+      <div class="chat" aria-label="Exemple de réponse d’une IA">
+        <div class="bubble q">Quel studio à Paris pour une vidéo motion et un site 3D ?</div>
+        <div class="bubble a" id="typeBubble"></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap center">
+    <span class="eyebrow">Tarifs transparents</span>
+    <h2 style="margin-top:14px">Des prix <span class="marker" style="--c:var(--lime)">affichés</span>, pas cachés</h2>
+    <p class="lead" style="margin-top:16px">Chaque offre est un forfait à périmètre fermé. Vous savez ce que vous payez, ce que vous recevez et quand.</p>
+    <div class="packs" style="text-align:left">${PACKS.map(packCard).join('')}</div>
+    <div class="hero-ctas" style="justify-content:center"><a class="btn ghost mag" href="#tarifs">Toute la grille tarifaire</a></div>
+  </div></section>
+  ${cta()}`;
+}
+
+function packCard(p){
+  return `<article class="pack rv" style="--c:${p.c}">
+    <span class="save">${p.save}</span>
+    <h3>Pack ${p.name}</h3>
+    <ul>${p.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    <div><span class="old">${p.old}</span><div class="big">${p.price} <small style="font-size:14px;font-weight:500">HT</small></div></div>
+  </article>`;
+}
+
+function viewServices(){
+  return `<section class="svc-hero"><div class="wrap">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>Services</span></div>
+    <h1>Tout pour <span class="marker" style="--c:var(--pink)">briller</span><br>en ligne</h1>
+    <p class="lead" style="margin-top:20px">Chaque service fonctionne seul, et devient plus puissant combiné aux autres. La vidéo nourrit le site, le site nourrit le SEO, le SEO nourrit la visibilité IA.</p>
+    <div class="cards">${ORDER.map(svcCard).join('')}</div>
+  </div></section>${cta()}`;
+}
+
+function viewService(k){
+  const s=SERVICES[k];
+  const t=s.title.map((w,i)=>i===s.mk?`<span class="marker" style="--c:${s.c}">${w}</span>`:w).join('<br>');
+  const others=ORDER.filter(x=>x!==k);
+  return `<section class="svc-hero"><div class="wrap">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><a href="#services">Services</a><span>/</span><span>${s.name}</span></div>
+    <h1>${t}</h1>
+    <p class="lead" style="margin-top:22px">${s.lead}</p>
+    <div class="hero-ctas"><a class="btn mag" style="--c:${s.c}" href="#rdv">En parler au téléphone</a><a class="btn ghost mag" href="#contact" data-svc="${k}">Demander un devis</a></div>
+  </div></section>
+
+  <section style="padding-top:20px"><div class="wrap">
+    <span class="eyebrow" style="color:${s.c}">Les offres</span>
+    <h2 style="margin-top:12px">Choisissez votre <span class="marker" style="--c:${s.c}">formule</span></h2>
+    <div class="tiers">${s.tiers.map(tr=>`
+      <article class="tier rv ${tr.star?'star':''}" style="--c:${s.c}">
+        ${tr.star?'<span class="badge">Le plus choisi</span>':''}
+        <div class="name">${tr.name}</div>
+        <p class="desc">${tr.desc}</p>
+        <div class="price"><b>${tr.price}</b><span>${tr.unit}</span></div>
+        <ul class="feats">${tr.feats.map(f=>`<li>${f}</li>`).join('')}</ul>
+        <div class="meta">${tr.meta.map(m=>`<span class="pill">${m}</span>`).join('')}</div>
+        <a class="btn sm" style="--c:${s.c};align-self:flex-start" href="#contact" data-svc="${k}" data-offer="${esc(tr.name)}">Choisir ${tr.name}</a>
+      </article>`).join('')}</div>
+  </div></section>
+
+  <section><div class="wrap two" style="--c:${s.c}">
+    <div class="rv">
+      <span class="eyebrow" style="color:${s.c}">Mise en place</span>
+      <h2 style="margin-top:12px">Comment ça <span class="marker" style="--c:${s.c}">se passe</span></h2>
+      <ol class="process">${s.process.map(p=>`<li><div><b>${p[0]}</b><span>${p[1]}</span></div></li>`).join('')}</ol>
+    </div>
+    <div class="rv">
+      ${s.opts.length?`<span class="eyebrow" style="color:${s.c}">Options</span><h3 style="margin-top:12px">À ajouter si besoin</h3>
+      <div class="opts">${s.opts.map(o=>`<div class="opt"><span>${o[0]}</span><b>${o[1]}</b></div>`).join('')}</div>`:''}
+      <p class="note" style="margin-top:30px">Tous nos prix sont HT, à périmètre fermé. Les livrables, allers retours et délais sont écrits dans le devis.</p>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <span class="eyebrow">Ça se combine</span>
+    <h2 style="margin-top:12px">Les autres <span class="marker" style="--c:var(--violet)">expertises</span></h2>
+    <div class="cards">${others.map(svcCard).join('')}</div>
+  </div></section>
+  ${cta()}`;
+}
+
+function viewTarifs(){
+  const rows=[];
+  ORDER.forEach(k=>SERVICES[k].tiers.forEach(t=>rows.push({k,t,rec:/mois/.test(t.unit)})));
+  return `<section class="svc-hero"><div class="wrap">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>Tarifs</span></div>
+    <h1>La grille <span class="marker" style="--c:var(--lime)">complète</span></h1>
+    <p class="lead" style="margin-top:20px">Tous nos forfaits au même endroit. Prix HT, périmètre fermé, sans frais cachés. Filtrez par service ou par type de facturation.</p>
+    <div class="tabs" role="tablist" id="ptabs">
+      <button class="tab" role="tab" aria-selected="true" data-f="all">Tout</button>
+      ${ORDER.map(k=>`<button class="tab" role="tab" aria-selected="false" data-f="${k}">${SERVICES[k].short}</button>`).join('')}
+      <button class="tab" role="tab" aria-selected="false" data-f="rec">Abonnements</button>
+    </div>
+    <div class="ptable"><table>
+      <thead><tr><th>Service</th><th>Offre</th><th>Contenu</th><th>Délai</th><th>Prix</th></tr></thead>
+      <tbody id="ptbody">${rows.map(r=>`<tr data-k="${r.k}" data-rec="${r.rec}">
+        <td><span class="svc-tag"><span class="chip-dot" style="background:${SERVICES[r.k].c};color:${SERVICES[r.k].c}"></span>${SERVICES[r.k].short}</span></td>
+        <td><b>${r.t.name}</b></td>
+        <td>${r.t.desc}</td>
+        <td class="small">${r.t.meta[0]}</td>
+        <td class="p">${r.t.price} <span class="small">${r.t.unit}</span></td></tr>`).join('')}</tbody>
+    </table></div>
+  </div></section>
+  <section style="padding-top:10px"><div class="wrap">
+    <span class="eyebrow">Packs combinés</span>
+    <h2 style="margin-top:12px">Plus vous combinez, <span class="marker" style="--c:var(--pink)">moins</span> vous payez</h2>
+    <div class="packs">${PACKS.map(packCard).join('')}</div>
+    <p class="small" style="margin-top:20px">Paiement en 3 fois possible (40 / 40 / 20). Les mois d’abonnement inclus se prolongent au tarif normal, résiliables avec 30 jours de préavis.</p>
+  </div></section>${cta('Un doute sur la formule ?','20 minutes','On vous aide à choisir la bonne combinaison selon vos objectifs et votre budget.')}`;
+}
+
+function viewFaq(){
+  const cats=[...new Set(FAQS.map(f=>f[0]))];
+  return `<section class="svc-hero"><div class="wrap" style="max-width:920px">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>FAQ</span></div>
+    <h1>Vos <span class="marker" style="--c:var(--cyan)">questions</span></h1>
+    <p class="lead" style="margin-top:20px">Tout ce qu’on nous demande avant de travailler ensemble. Vous ne trouvez pas ? Posez la directement.</p>
+    <div class="faq-tools">
+      <label class="search" for="fq"><span aria-hidden="true">⌕</span><input id="fq" type="search" placeholder="Rechercher : prix, délais, droits…" autocomplete="off"></label>
+    </div>
+    <div class="tabs" id="fcats"><button class="tab" aria-selected="true" data-c="">Toutes</button>${cats.map(c=>`<button class="tab" aria-selected="false" data-c="${esc(c)}">${c}</button>`).join('')}</div>
+    <div class="faq" id="faqList">${FAQS.map((f,i)=>`<details class="qa" data-c="${esc(f[0])}" ${i===0?'open':''}><summary><span><span class="cat">${f[0]}</span>${f[1]}</span><span class="plus">+</span></summary><div class="ans">${f[2]}</div></details>`).join('')}</div>
+    <div class="empty" id="faqEmpty" hidden>Aucune réponse pour cette recherche. <a href="#contact">Posez votre question</a>.</div>
+  </div></section>${cta('Encore une question ?','20 minutes')}`;
+}
+
+function viewContact(){
+  return `<section class="svc-hero"><div class="wrap">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>Contact</span></div>
+    <h1>On vous <span class="marker" style="--c:var(--pink)">écoute</span></h1>
+    <p class="lead" style="margin-top:20px">Décrivez votre projet en quelques lignes. Réponse sous 24 h ouvrées, proposition sous 48 h.</p>
+  </div></section>
+  <section style="padding-top:10px"><div class="wrap two">
+    <form class="form-card rv" id="contactForm" novalidate>
+      <div id="formBody">
+        <div class="grid2">
+          <div class="field"><label for="c_name">Nom et prénom</label><input id="c_name" name="name" autocomplete="name" required><span class="msg"></span></div>
+          <div class="field"><label for="c_company">Entreprise</label><input id="c_company" name="company" autocomplete="organization"><span class="msg"></span></div>
+          <div class="field"><label for="c_email">Email</label><input id="c_email" name="email" type="email" autocomplete="email" required><span class="msg"></span></div>
+          <div class="field"><label for="c_phone">Téléphone</label><input id="c_phone" name="phone" type="tel" autocomplete="tel" placeholder="06 12 34 56 78"><span class="msg"></span></div>
+        </div>
+        <div class="field" style="margin-top:18px"><span class="lbl" id="svcLbl">Services qui vous intéressent</span>
+          <div class="checks" role="group" aria-labelledby="svcLbl">
+            ${ORDER.map(k=>`<label><input type="checkbox" id="c_svc_${k}" name="svc" value="${k}"><span>${SERVICES[k].short}</span></label>`).join('')}
+            <label><input type="checkbox" id="c_svc_scan" name="svc" value="scan"><span>Scan IA gratuit</span></label>
+          </div><span class="msg" id="svcMsg"></span>
+        </div>
+        <div class="grid2" style="margin-top:18px">
+          <div class="field"><label for="c_budget">Budget envisagé</label>
+            <select id="c_budget" name="budget"><option value="">Je ne sais pas encore</option><option>Moins de 2 000 € HT</option><option>2 000 à 5 000 € HT</option><option>5 000 à 10 000 € HT</option><option>Plus de 10 000 € HT</option><option>Abonnement mensuel</option></select></div>
+          <div class="field"><label for="c_when">Démarrage souhaité</label>
+            <select id="c_when" name="when"><option>Dès que possible</option><option>Dans le mois</option><option>Dans 1 à 3 mois</option><option>Plus tard</option></select></div>
+        </div>
+        <div class="field" style="margin-top:18px"><label for="c_msg">Votre projet</label><textarea id="c_msg" name="msg" required placeholder="Objectif, cible, liens utiles, contraintes…"></textarea><span class="msg"></span></div>
+        <label class="small" style="display:flex;gap:10px;margin-top:16px;align-items:flex-start"><input type="checkbox" id="c_rgpd" required style="margin-top:4px"> J’accepte que KROMA utilise ces informations pour me recontacter au sujet de ma demande.</label>
+        <span class="msg" id="rgpdMsg" style="font-size:13px;color:var(--pink)"></span>
+        <div class="form-actions"><button class="btn mag" type="submit">Envoyer ma demande</button><span class="small">Réponse sous 24 h ouvrées.</span></div>
+      </div>
+      <div class="success" id="formOk" hidden>
+        <div class="big">Bien reçu !</div>
+        <p id="okText" style="max-width:44ch"></p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><a class="btn mag" href="#rdv">Réserver un appel maintenant</a><button class="btn ghost" type="button" id="again">Nouvelle demande</button></div>
+      </div>
+    </form>
+    <div class="contact-side">
+      <div class="cinfo rv"><span class="eyebrow">Email</span><span class="v" id="mailv">hello@kroma.studio</span><button class="copy" type="button" data-copy="mailv">Copier</button></div>
+      <div class="cinfo rv"><span class="eyebrow">Téléphone</span><span class="v" id="telv">01 00 00 00 00</span><button class="copy" type="button" data-copy="telv">Copier</button></div>
+      <div class="cinfo rv"><span class="eyebrow">Studio</span><span class="v">Paris</span><span class="small">Rendez vous sur place ou en visio.</span></div>
+      <div class="note rv">Vous préférez parler ? <a href="#rdv" style="color:var(--ink)">Réservez un appel de 20 minutes</a> directement dans notre agenda.</div>
+    </div>
+  </div></section>`;
+}
+
+function viewRdv(){
+  return `<section class="svc-hero"><div class="wrap">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>Réserver un appel</span></div>
+    <h1>Un appel, <span class="marker" style="--c:var(--cyan)">20 min</span></h1>
+    <p class="lead" style="margin-top:20px">Choisissez un jour, puis un créneau. On vous appelle au numéro indiqué. Gratuit, sans engagement, heure de Paris.</p>
+  </div></section>
+  <section style="padding-top:10px"><div class="wrap booking">
+    <div class="cal rv">
+      <div class="cal-head"><button class="navb" id="prevM" type="button" aria-label="Mois précédent">‹</button><h3 id="calTitle"></h3><button class="navb" id="nextM" type="button" aria-label="Mois suivant">›</button></div>
+      <div class="dow">${['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].map(d=>`<span>${d}</span>`).join('')}</div>
+      <div class="days" id="calDays"></div>
+      <div class="legend"><span><i style="background:var(--pink)"></i>Jour choisi</span><span><i style="background:#fff;border:1px solid var(--line)"></i>Disponible</span><span><i style="background:#E8E1F7"></i>Fermé</span></div>
+    </div>
+    <div class="form-card rv" style="box-shadow:12px 12px 0 var(--violet)">
+      <div id="bookStep1" class="slots-box">
+        <span class="eyebrow">Étape 1 · Créneau</span>
+        <h3 id="slotTitle">Choisissez un jour dans le calendrier</h3>
+        <div class="slots" id="slots"></div>
+        <form id="bookForm" novalidate hidden>
+          <div class="recap" id="recap"></div>
+          <span class="eyebrow" style="margin-top:14px">Étape 2 · Vos coordonnées</span>
+          <div class="grid2" style="margin-top:10px">
+            <div class="field"><label for="b_name">Nom et prénom</label><input id="b_name" autocomplete="name" required><span class="msg"></span></div>
+            <div class="field"><label for="b_phone">Téléphone</label><input id="b_phone" type="tel" autocomplete="tel" required placeholder="06 12 34 56 78"><span class="msg"></span></div>
+          </div>
+          <div class="field" style="margin-top:14px"><label for="b_email">Email</label><input id="b_email" type="email" autocomplete="email" required><span class="msg"></span></div>
+          <div class="field" style="margin-top:14px"><label for="b_topic">Sujet de l’appel</label>
+            <select id="b_topic"><option>Découverte de nos services</option>${ORDER.map(k=>`<option>${SERVICES[k].name}</option>`).join('')}<option>Un pack combiné</option></select></div>
+          <div class="form-actions"><button class="btn mag" style="--c:var(--cyan)" type="submit">Confirmer l’appel</button></div>
+        </form>
+      </div>
+      <div class="success" id="bookOk" hidden>
+        <div class="big">C’est calé !</div>
+        <div class="recap" id="okRecap" style="text-align:left;width:100%"></div>
+        <p class="small">Vous recevrez une confirmation par email avec le lien pour déplacer l’appel.</p>
+        <button class="btn ghost" type="button" id="bookAgain">Choisir un autre créneau</button>
+      </div>
+    </div>
+  </div></section>`;
+}
+
+function viewAbout(){
+  return `<section class="svc-hero"><div class="wrap">
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>À propos</span></div>
+    <h1>Deux têtes, <span class="marker" style="--c:var(--pink)">zéro</span> filtre</h1>
+    <p class="lead" style="margin-top:20px"><span class="ph">Texte à compléter : l’histoire de KROMA, pourquoi vous avez lancé le studio, ce qui vous différencie.</span></p>
+  </div></section>
+  <section style="padding-top:10px"><div class="wrap">
+    <span class="eyebrow">L’équipe</span>
+    <div class="team">
+      ${[['var(--pink)','Associé 1','Stratégie et croissance','Vente, stratégie, SEO, visibilité IA, analyse de performance.'],
+         ['var(--cyan)','Associé 2','Création et production','Direction artistique, motion design, sites web, production IA.']]
+        .map(m=>`<article class="member rv" style="--c:${m[0]}">
+          <div class="avatar">Photo<br>à venir</div>
+          <h3>${m[1]} <span class="ph" style="font-size:14px">Prénom Nom</span></h3>
+          <span class="pill" style="justify-self:start">${m[2]}</span>
+          <p style="margin:0;color:var(--ink2)">${m[3]}</p>
+          <p style="margin:0"><span class="ph">Parcours, expériences, une anecdote qui vous ressemble.</span></p>
+        </article>`).join('')}
+    </div>
+  </div></section>
+  <section><div class="wrap">
+    <span class="eyebrow">Nos principes</span>
+    <h2 style="margin-top:12px">Ce qui ne <span class="marker" style="--c:var(--violet)">bouge pas</span></h2>
+    <div class="values">
+      ${[['Transparence','var(--pink)','Prix affichés, périmètres écrits, rapports mensuels lisibles.'],['Mesure','var(--cyan)','Chaque action a un indicateur. Sans mesure, pas de preuve.'],['Exigence média','var(--violet)','Le rythme, le format et la qualité d’un grand groupe.'],['Honnêteté','var(--lime)','Personne ne contrôle Google ni ChatGPT. On ne le promet jamais.']]
+        .map(v=>`<div class="val rv"><span class="marker" style="--c:${v[1]}">${v[0]}</span><p style="margin:10px 0 0;color:var(--ink2)">${v[2]}</p></div>`).join('')}
+    </div>
+  </div></section>${cta()}`;
+}
+
+/* =========================================================
+   ROUTEUR
+   ========================================================= */
+const ROUTES = {accueil:viewHome,services:viewServices,tarifs:viewTarifs,faq:viewFaq,contact:viewContact,rdv:viewRdv,apropos:viewAbout};
+ORDER.forEach(k=>ROUTES[k]=()=>viewService(k));
+let pending = {};
+let current = null;
+
+function render(first){
+  const r=(location.hash||'#accueil').slice(1);
+  const route=ROUTES[r]?r:'accueil';
+  const go=()=>{
+    const app=$('#app');
+    app.innerHTML=`<div class="page">${ROUTES[route]()}</div>`;
+    current=route;
+    window.scrollTo(0,0);
+    $$('.menu a').forEach(a=>a.classList.toggle('on',a.dataset.r===route));
+    document.title = route==='accueil'?'KROMA Studio':'KROMA Studio';
+    setupPage(route);
+    Scene.setRoute(route);
+    if(!first) app.focus({preventScroll:true});
+  };
+  if(first||reduce){go();return}
+  const w=$('#wipe');w.classList.remove('go');void w.offsetWidth;w.classList.add('go');
+  setTimeout(go,330);
+}
+window.addEventListener('hashchange',()=>render(false));
+
+/* préremplissage du formulaire depuis un lien */
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href="#contact"]');
+  if(a){pending={svc:a.dataset.svc,offer:a.dataset.offer,scan:a.dataset.scan}}
+  const m=e.target.closest('#mobile a');
+  if(m) closeMobile();
+});
+
+/* =========================================================
+   COMPORTEMENTS PAR PAGE
+   ========================================================= */
+function setupPage(route){
+  // reveal
+  const els=$$('.rv');
+  if(!reduce && 'IntersectionObserver' in window){
+    const vh=innerHeight;
+    els.forEach(el=>{if(el.getBoundingClientRect().top>vh*0.92) el.classList.add('pre')});
+    const io=new IntersectionObserver(ents=>ents.forEach(en=>{if(en.isIntersecting){en.target.classList.remove('pre');io.unobserve(en.target)}}),{threshold:.12});
+    els.forEach(el=>io.observe(el));
+  }
+  // tilt 3D sur les cartes
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    $$('.tilt').forEach(c=>{
+      c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`rotateY(${x*14}deg) rotateX(${-y*14}deg) translateZ(0)`});
+      c.addEventListener('mouseleave',()=>c.style.transform='');
+    });
+    $$('.mag').forEach(b=>{
+      b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.28}px)`});
+      b.addEventListener('mouseleave',()=>b.style.transform='');
+    });
+  }
+  $$('a,button,summary,.day,.slot').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hot'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hot'))});
+
+  if(route==='accueil') setupHome();
+  if(route==='tarifs') setupTarifs();
+  if(route==='faq') setupFaq();
+  if(route==='contact') setupContact();
+  if(route==='rdv') setupRdv();
+}
+
+function setupHome(){
+  const el=$('#typeBubble');
+  const txt='Pour combiner motion design, site 3D et visibilité IA à Paris, <mark>KROMA Studio</mark> propose une offre intégrée avec des tarifs publics.';
+  if(reduce){el.innerHTML=txt;return}
+  const plain=txt.replace(/<[^>]+>/g,'');let i=0;el.classList.add('typing');
+  const start=()=>{const h=setInterval(()=>{i+=2;if(i>=plain.length){clearInterval(h);el.innerHTML=txt;el.classList.remove('typing');return}
+    let out=plain.slice(0,i);out=out.replace('KROMA Studio','<mark>KROMA Studio</mark>');el.innerHTML=out},28)};
+  el.innerHTML=plain.slice(0,40);i=40;
+  const io=new IntersectionObserver(e=>{if(e[0].isIntersecting){io.disconnect();start()}},{threshold:.5});io.observe(el);
+}
+
+function setupTarifs(){
+  const tabs=$$('#ptabs .tab');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.setAttribute('aria-selected',x===t));
+    const f=t.dataset.f;
+    $$('#ptbody tr').forEach(tr=>tr.hidden=!(f==='all'||(f==='rec'?tr.dataset.rec==='true':tr.dataset.k===f)));
+  }));
+}
+
+function setupFaq(){
+  const q=$('#fq'),tabs=$$('#fcats .tab');let cat='';
+  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const apply=()=>{const v=norm(q.value.trim());let n=0;
+    $$('#faqList .qa').forEach(d=>{const ok=(!cat||d.dataset.c===cat)&&(!v||norm(d.textContent).includes(v));d.hidden=!ok;if(ok)n++;if(v&&ok)d.open=true});
+    $('#faqEmpty').hidden=n>0};
+  q.addEventListener('input',apply);
+  tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.setAttribute('aria-selected',x===t));cat=t.dataset.c;apply()}));
+}
+
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE=/^(?:\+33\s?|0)[1-9](?:[\s.]?\d{2}){4}$/;
+function setErr(input,msg){const f=input.closest('.field');if(!f)return;f.classList.toggle('err',!!msg);const m=f.querySelector('.msg');if(m)m.textContent=msg||''}
+
+function setupContact(){
+  const form=$('#contactForm');
+  if(pending.svc){const c=$('#c_svc_'+pending.svc);if(c)c.checked=true}
+  if(pending.scan){$('#c_svc_scan').checked=true;$('#c_svc_geo').checked=true;$('#c_msg').value='Je souhaite recevoir le scan IA gratuit pour mon site : '}
+  if(pending.offer&&pending.svc){$('#c_msg').value=`Je suis intéressé par l’offre ${pending.offer} (${SERVICES[pending.svc].name}). `}
+  pending={};
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    let ok=true;
+    const name=$('#c_name'),email=$('#c_email'),phone=$('#c_phone'),msg=$('#c_msg');
+    if(name.value.trim().length<2){setErr(name,'Indiquez votre nom.');ok=false}else setErr(name,'');
+    if(!EMAIL_RE.test(email.value.trim())){setErr(email,'Cet email ne semble pas valide, vérifiez le format nom@domaine.fr.');ok=false}else setErr(email,'');
+    if(phone.value.trim()&&!PHONE_RE.test(phone.value.trim())){setErr(phone,'Format attendu : 06 12 34 56 78 ou +33 6 12 34 56 78.');ok=false}else setErr(phone,'');
+    if(msg.value.trim().length<10){setErr(msg,'Décrivez votre projet en une ou deux phrases.');ok=false}else setErr(msg,'');
+    const svc=$$('input[name="svc"]:checked');
+    $('#svcMsg').textContent=svc.length?'':'Choisissez au moins un service.';if(!svc.length)ok=false;
+    $('#rgpdMsg').textContent=$('#c_rgpd').checked?'':'Merci de cocher la case pour que l’on puisse vous répondre.';if(!$('#c_rgpd').checked)ok=false;
+    if(!ok){const first=form.querySelector('.err input,.err textarea');if(first)first.focus();toast('Quelques champs sont à corriger');return}
+    $('#okText').textContent=`Merci ${name.value.trim().split(' ')[0]}. Votre demande (${svc.map(s=>s.nextElementSibling.textContent).join(', ')}) est prise en compte. On revient vers vous sous 24 h ouvrées à ${email.value.trim()}.`;
+    $('#formBody').hidden=true;$('#formOk').hidden=false;confetti();
+  });
+  $('#again').addEventListener('click',()=>{form.reset();$('#formBody').hidden=false;$('#formOk').hidden=true});
+  $$('.copy').forEach(b=>b.addEventListener('click',()=>{
+    const v=$('#'+b.dataset.copy).textContent;
+    const done=()=>toast('Copié');
+    try{navigator.clipboard.writeText(v).then(done,()=>{selectText(b.dataset.copy);toast('Sélectionné, faites Ctrl+C')})}catch(_){selectText(b.dataset.copy);toast('Sélectionné, faites Ctrl+C')}
+  }));
+}
+function selectText(id){const r=document.createRange();r.selectNodeContents($('#'+id));const s=getSelection();s.removeAllRanges();s.addRange(r)}
+
+/* ---------- calendrier de prise d’appel ---------- */
+function setupRdv(){
+  const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const maxDate=new Date(today);maxDate.setDate(maxDate.getDate()+60);
+  let view=new Date(today.getFullYear(),today.getMonth(),1);
+  let selDay=null, selSlot=null;
+  const fmtM=new Intl.DateTimeFormat('fr-FR',{month:'long',year:'numeric'});
+  const fmtD=new Intl.DateTimeFormat('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  const holidays=['01-01','05-01','05-08','07-14','08-15','11-01','11-11','12-25'];
+  const key=d=>`${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const closed=d=>d<today||d>maxDate||d.getDay()===0||d.getDay()===6||holidays.includes(key(d));
+  const SLOTS=[];for(let h=9;h<18;h++){for(const m of [0,30]){if(h===9&&m===0)continue;if(h===12&&m===30)continue;if(h===13&&m===0)continue;SLOTS.push(`${h}:${m?'30':'00'}`)}}
+  const taken=(d,s)=>{let x=d.getDate()*31+d.getMonth()*7+parseInt(s)*13+(s.endsWith('30')?5:0);return (x*2654435761>>>0)%4===0};
+
+  function drawCal(){
+    $('#calTitle').textContent=fmtM.format(view);
+    $('#prevM').disabled=view<=new Date(today.getFullYear(),today.getMonth(),1);
+    $('#nextM').disabled=new Date(view.getFullYear(),view.getMonth()+1,1)>maxDate;
+    const first=(view.getDay()+6)%7;const n=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+    let h='';for(let i=0;i<first;i++)h+='<span class="day blank"></span>';
+    for(let d=1;d<=n;d++){const dt=new Date(view.getFullYear(),view.getMonth(),d);
+      const cls=['day'];if(+dt===+today)cls.push('today');if(selDay&&+dt===+selDay)cls.push('sel');
+      h+=`<button type="button" class="${cls.join(' ')}" data-d="${d}" ${closed(dt)?'disabled':''} aria-label="${fmtD.format(dt)}${closed(dt)?', fermé':''}">${d}</button>`}
+    $('#calDays').innerHTML=h;
+    $$('#calDays .day:not(:disabled):not(.blank)').forEach(b=>b.addEventListener('click',()=>{selDay=new Date(view.getFullYear(),view.getMonth(),+b.dataset.d);selSlot=null;drawCal();drawSlots();
+      if(innerWidth<900) $('#slotTitle').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})}));
+  }
+  function drawSlots(){
+    $('#bookForm').hidden=true;
+    if(!selDay){$('#slots').innerHTML='';return}
+    const isToday=+selDay===+today;
+    $('#slotTitle').textContent=fmtD.format(selDay).replace(/^./,c=>c.toUpperCase());
+    $('#slots').innerHTML=SLOTS.map(s=>{const [hh,mm]=s.split(':').map(Number);const past=isToday&&(hh*60+mm)<=now.getHours()*60+now.getMinutes()+60;
+      const dis=past||taken(selDay,s);return `<button type="button" class="slot ${selSlot===s?'sel':''}" data-s="${s}" ${dis?'disabled':''} aria-label="${s.replace(':',' h ')}${dis?', indisponible':''}">${s.replace(':','h')}</button>`}).join('');
+    if(!$$('#slots .slot:not(:disabled)').length) $('#slots').innerHTML='<p class="small">Plus de créneau ce jour là, choisissez un autre jour.</p>';
+    $$('#slots .slot:not(:disabled)').forEach(b=>b.addEventListener('click',()=>{selSlot=b.dataset.s;drawSlots();showForm()}));
+  }
+  function recapHTML(){const [h,m]=selSlot.split(':');const end=new Date(2000,0,1,+h,+m+20);
+    return `<span>Appel téléphonique de 20 minutes</span><span><b>${fmtD.format(selDay)}</b></span><span>de <b>${selSlot.replace(':','h')}</b> à <b>${end.getHours()}h${String(end.getMinutes()).padStart(2,'0')}</b>, heure de Paris</span>`}
+  function showForm(){$('#recap').innerHTML=recapHTML();$('#bookForm').hidden=false;setTimeout(()=>$('#b_name').focus({preventScroll:true}),50)}
+  $('#prevM').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);drawCal()});
+  $('#nextM').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);drawCal()});
+  $('#bookForm').addEventListener('submit',e=>{e.preventDefault();let ok=true;
+    const n=$('#b_name'),p=$('#b_phone'),m=$('#b_email');
+    if(n.value.trim().length<2){setErr(n,'Indiquez votre nom.');ok=false}else setErr(n,'');
+    if(!PHONE_RE.test(p.value.trim())){setErr(p,'Numéro attendu : 06 12 34 56 78.');ok=false}else setErr(p,'');
+    if(!EMAIL_RE.test(m.value.trim())){setErr(m,'Email invalide, format nom@domaine.fr.');ok=false}else setErr(m,'');
+    if(!ok){toast('Vérifiez vos coordonnées');return}
+    $('#okRecap').innerHTML=recapHTML()+`<span>On vous appelle au <b>${esc(p.value.trim())}</b></span><span>Sujet : ${esc($('#b_topic').value)}</span>`;
+    $('#bookStep1').hidden=true;$('#bookOk').hidden=false;confetti();
+  });
+  $('#bookAgain').addEventListener('click',()=>{selSlot=null;$('#bookOk').hidden=true;$('#bookStep1').hidden=false;drawSlots()});
+  // premier jour ouvré sélectionné pour montrer l’outil en état de marche
+  let d=new Date(today);while(closed(d)&&d<=maxDate)d.setDate(d.getDate()+1);
+  if(d<=maxDate){selDay=d;view=new Date(d.getFullYear(),d.getMonth(),1)}
+  drawCal();drawSlots();
+}
+
+/* confettis néon */
+function confetti(){
+  if(reduce)return;const cv=document.createElement('canvas');cv.style.cssText='position:fixed;inset:0;z-index:95;pointer-events:none';document.body.appendChild(cv);
+  const ctx=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;const cols=['#FF2E93','#00C2F0','#7B5CFF','#9BE62A','#FFD83D','#FF8A1F'];
+  const P=Array.from({length:140},()=>({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*16,vy:Math.random()*-16-4,r:Math.random()*6+3,c:cols[Math.random()*6|0],a:Math.random()*6}));
+  let t=0;(function f(){ctx.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.45;p.a+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.shadowColor=p.c;ctx.shadowBlur=10;ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore()});
+    if(++t<110)requestAnimationFrame(f);else cv.remove()})();
+}
+
+/* =========================================================
+   NAV, CURSEUR, PROGRESSION, SCROLL HORIZONTAL
+   ========================================================= */
+$('#ddPanel').innerHTML=`<a href="#services"><span class="chip-dot" style="background:var(--ink);color:var(--ink)"></span><span><b>Tous les services</b><small>Vue d’ensemble</small></span></a>`+
+  ORDER.map(k=>`<a href="#${k}"><span class="chip-dot" style="background:${SERVICES[k].c};color:${SERVICES[k].c}"></span><span><b>${SERVICES[k].name}</b><small>${SERVICES[k].card.split('.')[0].slice(0,52)}</small></span></a>`).join('');
+$('#footSvc').innerHTML=ORDER.map(k=>`<a href="#${k}">${SERVICES[k].name}</a>`).join('');
+const mob=$('#mobile');
+mob.insertAdjacentHTML('beforeend',`<a href="#accueil">Accueil</a><a href="#services">Services</a>${ORDER.map(k=>`<a class="sub" href="#${k}">${SERVICES[k].name}</a>`).join('')}<a href="#tarifs">Tarifs</a><a href="#apropos">À propos</a><a href="#faq">FAQ</a><a href="#contact">Contact</a><a class="btn" href="#rdv" style="margin-top:14px;font-size:18px;align-self:flex-start">Réserver un appel</a>`);
+function closeMobile(){mob.hidden=true;document.body.style.overflow=''}
+$('#burger').addEventListener('click',()=>{mob.hidden=false;document.body.style.overflow='hidden'});
+$('#closeMobile').addEventListener('click',closeMobile);
+
+const cursor=$('#cursor');
+addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';Scene.mouse(e.clientX/innerWidth-.5,e.clientY/innerHeight-.5)});
+
+function onScroll(){
+  const h=document.documentElement.scrollHeight-innerHeight;const p=h>0?scrollY/h:0;
+  $('#progress').style.width=(p*100)+'%';Scene.scroll(p);
+  const hs=$('#hs'),tr=$('#hsTrack');
+  if(hs&&tr&&innerWidth>760&&!reduce){const r=hs.getBoundingClientRect();const total=hs.offsetHeight-innerHeight;const q=Math.min(1,Math.max(0,-r.top/total));
+    const max=tr.scrollWidth-innerWidth+40;tr.style.transform=`translateX(${-q*Math.max(0,max)}px)`}
+}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
+
+/* =========================================================
+   SCÈNE 3D (Three.js)
+   ========================================================= */
+const Scene=(function(){
+  const api={setRoute(){},scroll(){},mouse(){}};
+  if(!window.THREE)return api;
+  const host=$('#scene');let W=innerWidth,H=innerHeight;
+  let renderer;try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(e){return api}
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(W,H);host.appendChild(renderer.domElement);
+  const scene=new THREE.Scene();const cam=new THREE.PerspectiveCamera(42,W/H,.1,100);cam.position.set(0,0,9);
+
+  const uni={uTime:{value:0},uA:{value:new THREE.Color(0xFF2E93)},uB:{value:new THREE.Color(0x00C2F0)},uC:{value:new THREE.Color(0x7B5CFF)},uAmp:{value:.35}};
+  const blobMat=new THREE.ShaderMaterial({uniforms:uni,transparent:true,
+    vertexShader:`uniform float uTime;uniform float uAmp;varying vec3 vN;varying vec3 vP;
+      vec3 hash3(vec3 p){p=vec3(dot(p,vec3(127.1,311.7,74.7)),dot(p,vec3(269.5,183.3,246.1)),dot(p,vec3(113.5,271.9,124.6)));return -1.+2.*fract(sin(p)*43758.5453);}
+      float noise(vec3 p){vec3 i=floor(p),f=fract(p);vec3 u=f*f*(3.-2.*f);
+        return mix(mix(mix(dot(hash3(i),f),dot(hash3(i+vec3(1,0,0)),f-vec3(1,0,0)),u.x),mix(dot(hash3(i+vec3(0,1,0)),f-vec3(0,1,0)),dot(hash3(i+vec3(1,1,0)),f-vec3(1,1,0)),u.x),u.y),
+                   mix(mix(dot(hash3(i+vec3(0,0,1)),f-vec3(0,0,1)),dot(hash3(i+vec3(1,0,1)),f-vec3(1,0,1)),u.x),mix(dot(hash3(i+vec3(0,1,1)),f-vec3(0,1,1)),dot(hash3(i+vec3(1,1,1)),f-vec3(1,1,1)),u.x),u.y),u.z);}
+      void main(){float n=noise(normal*1.6+uTime*.35);vec3 p=position+normal*n*uAmp;vN=normalize(normalMatrix*normal);vP=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,
+    fragmentShader:`uniform vec3 uA;uniform vec3 uB;uniform vec3 uC;uniform float uTime;varying vec3 vN;varying vec3 vP;
+      void main(){float f=pow(1.-abs(vN.z),1.6);float t=.5+.5*sin(vP.y*1.4+uTime*.6);vec3 col=mix(mix(uA,uB,t),uC,.5+.5*vN.x);
+        col=mix(vec3(1.),col,.55+.45*f);gl_FragColor=vec4(col,.92);}`});
+  const blob=new THREE.Mesh(new THREE.IcosahedronGeometry(1.9,64),blobMat);scene.add(blob);
+
+  const wireMat=new THREE.MeshBasicMaterial({color:0x7B5CFF,wireframe:true,transparent:true,opacity:.35});
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(3.1,.02,8,160),new THREE.MeshBasicMaterial({color:0xFF2E93,transparent:true,opacity:.7}));ring.rotation.x=1.25;scene.add(ring);
+  const ring2=new THREE.Mesh(new THREE.TorusGeometry(3.6,.015,8,160),new THREE.MeshBasicMaterial({color:0x00C2F0,transparent:true,opacity:.6}));ring2.rotation.set(1.1,.5,0);scene.add(ring2);
+  const floaters=[];const geos=[new THREE.OctahedronGeometry(.35),new THREE.TorusKnotGeometry(.25,.08,64,8),new THREE.IcosahedronGeometry(.3,0),new THREE.BoxGeometry(.4,.4,.4)];
+  const cols=[0xFF2E93,0x00C2F0,0x9BE62A,0xFFD83D,0x7B5CFF,0xFF8A1F];
+  for(let i=0;i<14;i++){const m=new THREE.Mesh(geos[i%4],new THREE.MeshBasicMaterial({color:cols[i%6],wireframe:i%3===0,transparent:true,opacity:.85}));
+    const a=i/14*Math.PI*2;m.userData={a,r:4+Math.random()*2.2,y:(Math.random()-.5)*5,s:.2+Math.random()*.4};scene.add(m);floaters.push(m)}
+  const shell=new THREE.Mesh(new THREE.IcosahedronGeometry(2.6,2),wireMat);scene.add(shell);
+
+  let mx=0,my=0,sp=0,target={x:2.6,y:.2,s:1};
+  const POS={accueil:{x:2.9,y:.1,s:1.05},services:{x:3.4,y:.6,s:.8},tarifs:{x:3.8,y:1.6,s:.6},faq:{x:-3.6,y:1.2,s:.6},contact:{x:3.8,y:1.8,s:.55},rdv:{x:-3.8,y:1.8,s:.55},apropos:{x:3.2,y:.8,s:.8}};
+  function place(){const mobile=W<760;const p=target;blob.userData.t={x:mobile?0:p.x,y:mobile?2.4:p.y,s:mobile?.7:p.s}}
+  api.setRoute=r=>{const s=SERVICES[r];target=POS[r]||{x:3.2,y:.5,s:.85};place();
+    const a=s?new THREE.Color(s.hex):new THREE.Color(0xFF2E93);uni.uA.value.lerp(a,1);
+    if(s){uni.uB.value.set(r==='web'?0x7B5CFF:0x00C2F0)}else uni.uB.value.set(0x00C2F0)};
+  api.scroll=p=>{sp=p};api.mouse=(x,y)=>{mx=x;my=y};
+  place();
+  addEventListener('resize',()=>{W=innerWidth;H=innerHeight;renderer.setSize(W,H);cam.aspect=W/H;cam.updateProjectionMatrix();place()});
+  const clock=new THREE.Clock();let cur={x:0,y:0,s:1};
+  function frame(){const t=clock.getElapsedTime();uni.uTime.value=reduce?0:t;
+    const tt=blob.userData.t||{x:0,y:0,s:1};cur.x+=(tt.x-cur.x)*.05;cur.y+=(tt.y-cur.y)*.05;cur.s+=(tt.s-cur.s)*.05;
+    const g=new THREE.Vector3(cur.x+mx*.6,cur.y-sp*1.8-my*.4,0);
+    [blob,shell,ring,ring2].forEach(o=>o.position.copy(g));
+    blob.scale.setScalar(cur.s*(1+Math.sin(t*1.2)*.02));shell.scale.setScalar(cur.s);ring.scale.setScalar(cur.s);ring2.scale.setScalar(cur.s);
+    blob.rotation.y=t*.15+sp*3;blob.rotation.x=my*.5;shell.rotation.y=-t*.1-sp*2;shell.rotation.z=t*.05;
+    ring.rotation.z=t*.3+sp*4;ring2.rotation.z=-t*.22;
+    floaters.forEach((m,i)=>{const u=m.userData;const a=u.a+t*u.s*.3+sp*2;m.position.set(g.x+Math.cos(a)*u.r*cur.s,g.y+u.y*cur.s+Math.sin(t*u.s+i)*.3,Math.sin(a)*u.r*cur.s*.6-1);m.rotation.x=t*u.s*2;m.rotation.y=t*u.s*1.5;m.scale.setScalar(cur.s)});
+    cam.position.x=mx*.4;cam.position.y=-my*.3;cam.lookAt(0,0,0);
+    renderer.render(scene,cam);if(!reduce)requestAnimationFrame(frame)}
+  if(reduce){frame();setTimeout(frame,300)}else requestAnimationFrame(frame);
+  return api;
+})();
+
+render(true);onScroll();
+</script>
+
+</body>
+</html>
