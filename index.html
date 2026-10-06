@@ -438,9 +438,23 @@ footer{position:relative;z-index:2;padding-block:50px 40px;padding-inline:var(--
 .secret:focus-visible{outline:2px solid var(--cyan)}
 #adminModal{position:fixed;inset:0;z-index:110;background:rgba(20,12,40,.6);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;overflow:auto}
 .admin-card{width:min(720px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--bg);border:2px solid var(--ink);border-radius:26px;padding:clamp(20px,3vw,32px);box-shadow:10px 10px 0 var(--violet);display:grid;gap:12px}
-#adminBar{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:86;display:flex;gap:6px;align-items:center;background:var(--ink);color:#fff;border-radius:999px;padding:6px 6px 6px 14px;font:700 13px var(--f-display);box-shadow:0 10px 30px rgba(29,20,56,.3)}
+#adminBar{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:86;display:flex;gap:6px;align-items:center;background:var(--ink);color:#fff;border-radius:999px;padding:6px 6px 6px 14px;font:700 13px var(--f-display);box-shadow:0 10px 30px rgba(29,20,56,.3)}
 #adminBar button{border:0;border-radius:999px;padding:8px 12px;font:700 13px var(--f-display);cursor:pointer;background:#fff;color:var(--ink)}
 #adminBar button:first-of-type{background:var(--pink);color:#fff}
+
+/* WhatsApp et Instagram */
+.socials{display:flex;flex-wrap:wrap;gap:10px}
+.socials.center{justify-content:center}
+.soc{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;color:#fff;transition:transform .2s,box-shadow .2s}
+.soc:hover{transform:translateY(-2px)}
+.soc.wa,.dock-btn.wa{background:#1FAF55;box-shadow:0 6px 18px rgba(31,175,85,.35)}
+.soc.ig,.dock-btn.ig{background:radial-gradient(circle at 30% 110%,#FFD83D 0%,#FF8A1F 25%,#FF2E93 55%,#7B5CFF 100%);box-shadow:0 6px 18px rgba(255,46,147,.35)}
+.foot-social{max-width:var(--maxw);margin:26px auto 0;display:flex}
+.dock{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:84;display:grid;gap:10px}
+.dock-btn{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;transition:transform .2s}
+.dock-btn:hover{transform:scale(1.08)}
+.dock-btn svg{width:26px;height:26px}
+@media (max-width:640px){.dock{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}.dock-btn{width:46px;height:46px}}
 
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
@@ -472,7 +486,7 @@ footer{position:relative;z-index:2;padding-block:50px 40px;padding-inline:var(--
       <li><a href="#faq" data-r="faq">FAQ</a></li>
       <li><a href="#contact" data-r="contact">Contact</a></li>
     </ul>
-    <a class="btn sm nav-cta" href="#rdv">Réserver un appel</a>
+    <a class="btn sm nav-cta" href="#rdv">Réserver une visio</a>
     <button class="burger" id="burger" type="button" aria-controls="mobile">Menu</button>
   </nav>
 </header>
@@ -491,8 +505,9 @@ footer{position:relative;z-index:2;padding-block:50px 40px;padding-inline:var(--
     </div>
     <div><h4>Services</h4><div id="footSvc"></div></div>
     <div><h4>Studio</h4><a href="#realisations">Réalisations</a><a href="#apropos">À propos</a><a href="#tarifs">Tarifs</a><a href="#blog">Blog</a><a href="#faq">FAQ</a></div>
-    <div><h4>Parler</h4><a href="#contact">Formulaire</a><a href="#rdv">Réserver un appel</a><a href="#contact" data-scan="1">Scan IA gratuit</a></div>
+    <div><h4>Parler</h4><a href="#contact">Formulaire</a><a href="#rdv">Réserver une visio</a><a href="#contact" data-scan="1">Scan IA gratuit</a></div>
   </div>
+  <div class="foot-social" id="footSocial"></div>
   <div class="foot-bottom">
     <span><button type="button" class="secret" id="adminBtn" aria-label="Espace administrateur">©</button> <span id="year">2026</span> Stratos Conseil</span>
     <nav aria-label="Informations légales"><a href="#mentions">Mentions légales</a><a href="#confidentialite">Confidentialité</a><a href="#cookies">Cookies</a><button type="button" class="linkbtn" id="manageCookies">Gérer les cookies</button></nav>
@@ -508,6 +523,7 @@ footer{position:relative;z-index:2;padding-block:50px 40px;padding-inline:var(--
   </div>
 </div>
 
+<div class="dock" id="dock"></div>
 <div id="adminModal" hidden><div class="admin-card" role="dialog" aria-modal="true" aria-label="Espace administrateur" id="adminIn"></div></div>
 <div id="adminBar" hidden><span>Admin</span><button type="button" id="abNew">Nouvel article</button><button type="button" id="abOpen">Compte</button></div>
 
@@ -535,6 +551,21 @@ const MEDIA = {
     // { service: 'web', type: 'image', src: 'media/site-1.jpg', titre: 'Site vitrine', client: 'Nom du client' },
   ]
 };
+
+/* =========================================================
+   CONTACTS : à compléter
+   whatsapp : numéro au format international sans + ni espaces (ex. 33612345678)
+   instagram : nom du compte sans @
+   email : adresse qui reçoit les messages du formulaire de contact.
+   Au premier message, FormSubmit envoie un email de confirmation
+   à cette adresse : cliquez sur le lien pour activer la réception.
+   ========================================================= */
+const CONTACT = { whatsapp: '', instagram: '', email: '' };
+const waLink = (txt='Bonjour Stratos Conseil, je souhaite parler de mon projet.') => CONTACT.whatsapp ? `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(txt)}` : '#contact';
+const igLink = () => CONTACT.instagram ? `https://instagram.com/${CONTACT.instagram}` : '#contact';
+const WA_ICO = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 2.2A9.8 9.8 0 0 0 3.6 17l-1.4 4.8 5-1.3A9.8 9.8 0 1 0 12 2.2Zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3a2.6 2.6 0 0 0-.8 1.9 4.5 4.5 0 0 0 1 2.4 10.3 10.3 0 0 0 4 3.5c1.5.6 2 .7 2.8.6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.2Z"/></svg>';
+const IG_ICO = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>';
+function socialBtns(cls=''){return `<div class="socials ${cls}"><a class="soc wa" href="${waLink()}" target="_blank" rel="noopener">${WA_ICO}<span>WhatsApp</span></a><a class="soc ig" href="${igLink()}" target="_blank" rel="noopener">${IG_ICO}<span>Instagram</span></a></div>`}
 
 /* =========================================================
    DONNÉES
@@ -570,7 +601,7 @@ const SERVICES = {
     lead:'Tous types de sites : landing page, site vitrine, boutique en ligne, refonte ou projet sur mesure. Design soigné, rapide, pensé pour convertir, avec le SEO technique dès la première ligne.',
     tiers:[
       {name:'Essentiel',price:'490 €',unit:'HT',desc:'Landing page ou site une page.',feats:['Design sur mesure et responsive','Formulaire et prise de rendez vous','SEO technique de base','Mesure d’audience installée'],meta:['2 semaines']},
-      {name:'Vitrine',price:'990 €',unit:'HT',desc:'Site vitrine de 5 à 8 pages.',feats:['CMS éditable et blog','Animations au scroll','Calendrier de prise d’appel','SEO on page et formation 1 h'],meta:['3 à 4 semaines'],star:true},
+      {name:'Vitrine',price:'990 €',unit:'HT',desc:'Site vitrine de 5 à 8 pages.',feats:['CMS éditable et blog','Animations au scroll','Calendrier de prise de rendez vous','SEO on page et formation 1 h'],meta:['3 à 4 semaines'],star:true},
       {name:'Business',price:'1 990 €',unit:'HT',desc:'Site complet ou boutique en ligne.',feats:['Jusqu’à 15 pages ou 50 produits','Paiement en ligne et emails automatiques','Connexion à votre CRM','Multilingue possible'],meta:['5 à 6 semaines']}
     ],
     custom:{desc:'Site immersif 3D, application web, plateforme ou refonte complexe.',feats:['Expérience 3D et WebGL','Application ou espace client','Intégrations sur mesure','Migration et refonte de site existant']},
@@ -633,7 +664,7 @@ const FAQS = [
   ['Général','Vous travaillez avec quels types d’entreprises ?','Indépendants, PME, marques en ligne, startups, mais aussi entreprises et grands groupes, notamment avec notre offre de marketing intégré 2 jours par semaine.'],
   ['Général','Utilisez vous l’intelligence artificielle ?','Oui, pour produire plus vite et plus loin : animation, voix, déclinaisons, analyse. Chaque livrable reste dirigé, contrôlé et validé par nous.'],
   ['Tarifs','Vos prix sont ils HT ?','Oui, tous les prix affichés sont hors taxes. Chaque devis est à périmètre fermé : livrables, allers retours et délais sont écrits.'],
-  ['Tarifs','Comment fonctionne une offre sur mesure ?','Un appel de 20 minutes pour comprendre votre projet, puis un cahier des charges et un devis détaillé sous 48 h.'],
+  ['Tarifs','Comment fonctionne une offre sur mesure ?','Une visio Google Meet de 20 minutes pour comprendre votre projet, puis un cahier des charges et un devis détaillé sous 48 h.'],
   ['Tarifs','Comment se passe le paiement ?','Acompte de 50 % pour la vidéo et le marketing, 40 / 40 / 20 pour le web. Les abonnements sont prélevés en début de mois. Paiement en 3 fois possible sur les packs.'],
   ['Tarifs','Y a t il un engagement sur les abonnements ?','3 mois pour le SEO, le Suivi IA, le Pilotage et le Marketing intégré. Ensuite, résiliation avec 30 jours de préavis.'],
   ['Motion design','Combien d’allers retours sont inclus ?','2 allers retours pour Spark et Pulse, 3 pour Orbit. Un aller retour supplémentaire coûte 39 €.'],
@@ -646,7 +677,7 @@ const FAQS = [
   ['SEO et IA','En combien de temps voit on des résultats ?','Les premiers effets apparaissent généralement entre 3 et 6 mois, en SEO comme dans les assistants IA.'],
   ['Marketing et CRM','Que comprend le marketing intégré 2 jours par semaine ?','Un responsable marketing dédié, présent chez vous ou à distance 2 jours par semaine : CRM, contenus interactifs, stratégie, audit, analyse, A/B tests, calendrier éditorial, KPI et dashboards, avec un reporting à la direction.'],
   ['Marketing et CRM','Avec quels CRM travaillez vous ?','Avec les outils du marché comme HubSpot, Brevo ou Salesforce, et on vous aide à choisir si vous n’en avez pas encore.'],
-  ['Contact','Comment se passe l’appel de découverte ?','20 minutes au téléphone, gratuit et sans engagement. On comprend votre besoin, puis vous recevez une proposition sous 48 h.']
+  ['Contact','Comment se passe la visio de découverte ?','20 minutes en visio sur Google Meet, gratuit et sans engagement. On comprend votre besoin, puis vous recevez une proposition sous 48 h.']
 ];
 
 /* =========================================================
@@ -695,15 +726,17 @@ function svcCard(k){
     <span class="from">à partir de <b>${from.price}</b> ${from.unit}</span>
   </a>`;
 }
-function cta(title='Parlons de votre projet', marker='20 minutes', text='Un appel téléphonique gratuit pour comprendre votre besoin. Proposition détaillée sous 48 h.'){
+function cta(title='Parlons de votre projet', marker='20 minutes', text='Une visio Google Meet gratuite de 20 minutes pour comprendre votre besoin. Proposition détaillée sous 48 h.'){
   return `<section><div class="wrap"><div class="cta rv">
     <span class="eyebrow" style="color:var(--yellow)">Prochaine étape</span>
     <h2 style="margin-top:14px">${title}<br><span class="marker" style="--c:var(--yellow)">${marker}</span> suffisent</h2>
     <p>${text}</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <a class="btn mag" href="#rdv">Réserver un appel</a>
+      <a class="btn mag" href="#rdv">Réserver une visio</a>
       <a class="btn mag" style="--c:var(--cyan)" href="#contact">Écrire un message</a>
     </div>
+    <p style="margin:22px auto 10px;font-size:14px">Ou écrivez nous directement</p>
+    ${socialBtns('center')}
   </div></div></section>`;
 }
 
@@ -719,7 +752,7 @@ function viewHome(){
       </h1>
       <p class="lead">Vidéo et motion design, sites web, SEO, visibilité dans les IA et marketing piloté par la donnée. Un seul studio pour être vu sur Google, dans les assistants IA et sur les réseaux.</p>
       <div class="hero-ctas">
-        <a class="btn mag" href="#rdv">Réserver un appel gratuit</a>
+        <a class="btn mag" href="#rdv">Réserver une visio gratuite</a>
         <a class="btn ghost mag" href="#services">Voir les services</a>
       </div>
     </div>
@@ -739,9 +772,9 @@ function viewHome(){
 
   <section><div class="wrap">
     <span class="eyebrow">Comment on travaille</span>
-    <h2 style="margin-top:14px">De l’appel à la <span class="marker" style="--c:var(--cyan)">mise en ligne</span></h2>
+    <h2 style="margin-top:14px">De la visio à la <span class="marker" style="--c:var(--cyan)">mise en ligne</span></h2>
     <ol class="flow">
-      ${[['Appel de 20 minutes','On qualifie votre besoin, votre budget et vos délais.','var(--pink)'],
+      ${[['Visio de 20 minutes','On qualifie votre besoin, votre budget et vos délais.','var(--pink)'],
          ['Proposition sous 48 h','Un devis clair avec une option recommandée.','var(--yellow)'],
          ['Lancement','Signature en ligne, acompte, accès partagés.','var(--lime)'],
          ['Production par étapes','Chaque étape validée par écrit avant la suivante.','var(--cyan)'],
@@ -832,7 +865,7 @@ function viewService(k){
     <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><a href="#services">Services</a><span>/</span><span>${s.name}</span></div>
     <h1>${t}</h1>
     <p class="lead" style="margin-top:22px">${s.lead}</p>
-    <div class="hero-ctas"><a class="btn mag" style="--c:${s.c}" href="#rdv">En parler au téléphone</a><a class="btn ghost mag" href="#contact" data-svc="${k}">Demander un devis</a></div>
+    <div class="hero-ctas"><a class="btn mag" style="--c:${s.c}" href="#rdv">En parler en visio</a><a class="btn ghost mag" href="#contact" data-svc="${k}">Demander un devis</a></div>
   </div></section>
 
   ${s.types?`<section style="padding-block:10px 0"><div class="wrap"><span class="eyebrow" style="color:${s.c}">Ce qu’on réalise</span><div class="types">${s.types.map(t=>`<span class="type" style="--c:${s.c}">${t}</span>`).join('')}</div></div></section>`:''}
@@ -955,28 +988,30 @@ function viewContact(){
         <div class="field" style="margin-top:18px"><label for="c_msg">Votre projet</label><textarea id="c_msg" name="msg" required placeholder="Objectif, cible, liens utiles, contraintes…"></textarea><span class="msg"></span></div>
         <label class="small" style="display:flex;gap:10px;margin-top:16px;align-items:flex-start"><input type="checkbox" id="c_rgpd" required style="margin-top:4px"> <span>J’accepte que Stratos Conseil utilise ces informations pour me recontacter au sujet de ma demande, conformément à la <a href="#confidentialite">politique de confidentialité</a>.</span></label>
         <span class="msg" id="rgpdMsg" style="font-size:13px;color:var(--pink)"></span>
+        <input type="text" id="c_honey" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
         <div class="form-actions"><button class="btn mag" type="submit">Envoyer ma demande</button><span class="small">Réponse sous 24 h ouvrées.</span></div>
       </div>
       <div class="success" id="formOk" hidden>
         <div class="big">Bien reçu !</div>
         <p id="okText" style="max-width:44ch"></p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><a class="btn mag" href="#rdv">Réserver un appel maintenant</a><button class="btn ghost" type="button" id="again">Nouvelle demande</button></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><a class="btn mag" href="#rdv">Réserver une visio maintenant</a><button class="btn ghost" type="button" id="again">Nouvelle demande</button></div>
       </div>
     </form>
     <div class="contact-side">
-      <div class="cinfo rv"><span class="eyebrow">Email</span><span class="v" id="mailv">hello@stratosconseil.fr</span><button class="copy" type="button" data-copy="mailv">Copier</button></div>
+      <div class="cinfo rv"><span class="eyebrow">Email</span><span class="v" id="mailv">${CONTACT.email||'hello@stratosconseil.fr'}</span><button class="copy" type="button" data-copy="mailv">Copier</button></div>
+      <div class="cinfo rv"><span class="eyebrow">WhatsApp et Instagram</span><span class="small">La réponse la plus rapide, en semaine comme le week end.</span>${socialBtns()}</div>
       <div class="cinfo rv"><span class="eyebrow">Téléphone</span><span class="v" id="telv">01 00 00 00 00</span><button class="copy" type="button" data-copy="telv">Copier</button></div>
       <div class="cinfo rv"><span class="eyebrow">Studio</span><span class="v">Paris</span><span class="small">Rendez vous sur place ou en visio.</span></div>
-      <div class="note rv">Vous préférez parler ? <a href="#rdv" style="color:var(--ink)">Réservez un appel de 20 minutes</a> directement dans notre agenda.</div>
+      <div class="note rv">Vous préférez parler ? <a href="#rdv" style="color:var(--ink)">Réservez une visio Google Meet de 20 minutes</a> directement dans notre agenda.</div>
     </div>
   </div></section>`;
 }
 
 function viewRdv(){
   return `<section class="svc-hero"><div class="wrap">
-    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>Réserver un appel</span></div>
-    <h1>Un appel, <span class="marker" style="--c:var(--cyan)">20 min</span></h1>
-    <p class="lead" style="margin-top:20px">Choisissez un jour, puis un créneau. On vous appelle au numéro indiqué. Gratuit, sans engagement, heure de Paris.</p>
+    <div class="crumbs"><a href="#accueil">Accueil</a><span>/</span><span>Réserver une visio</span></div>
+    <h1>Une visio, <span class="marker" style="--c:var(--cyan)">20 min</span></h1>
+    <p class="lead" style="margin-top:20px">Choisissez un jour, puis un créneau. Vous recevez un lien Google Meet par email. Gratuit, sans engagement, heure de Paris.</p>
   </div></section>
   <section style="padding-top:10px"><div class="wrap booking">
     <div class="cal rv">
@@ -995,18 +1030,18 @@ function viewRdv(){
           <span class="eyebrow" style="margin-top:14px">Étape 2 · Vos coordonnées</span>
           <div class="grid2" style="margin-top:10px">
             <div class="field"><label for="b_name">Nom et prénom</label><input id="b_name" autocomplete="name" required><span class="msg"></span></div>
-            <div class="field"><label for="b_phone">Téléphone</label><input id="b_phone" type="tel" autocomplete="tel" required placeholder="06 12 34 56 78"><span class="msg"></span></div>
+            <div class="field"><label for="b_phone">Téléphone (facultatif)</label><input id="b_phone" type="tel" autocomplete="tel" placeholder="06 12 34 56 78"><span class="msg"></span></div>
           </div>
           <div class="field" style="margin-top:14px"><label for="b_email">Email</label><input id="b_email" type="email" autocomplete="email" required><span class="msg"></span></div>
-          <div class="field" style="margin-top:14px"><label for="b_topic">Sujet de l’appel</label>
+          <div class="field" style="margin-top:14px"><label for="b_topic">Sujet de la visio</label>
             <select id="b_topic"><option>Découverte de nos services</option>${ORDER.map(k=>`<option>${SERVICES[k].name}</option>`).join('')}<option>Un pack combiné</option><option>Une offre sur mesure</option></select></div>
-          <div class="form-actions"><button class="btn mag" style="--c:var(--cyan)" type="submit">Confirmer l’appel</button></div>
+          <div class="form-actions"><button class="btn mag" style="--c:var(--cyan)" type="submit">Confirmer la visio</button></div>
         </form>
       </div>
       <div class="success" id="bookOk" hidden>
         <div class="big">C’est calé !</div>
         <div class="recap" id="okRecap" style="text-align:left;width:100%"></div>
-        <p class="small">Vous recevrez une confirmation par email avec le lien pour déplacer l’appel.</p>
+        <p class="small">Vous recevrez une confirmation par email avec le lien Google Meet et la possibilité de déplacer le rendez vous.</p>
         <button class="btn ghost" type="button" id="bookAgain">Choisir un autre créneau</button>
       </div>
     </div>
@@ -1073,7 +1108,7 @@ function viewMentions(){
 function viewConfidentialite(){
   const rows=[
     ['Répondre à vos demandes de contact','Nom, entreprise, email, téléphone, message','Mesures précontractuelles à votre demande','3 ans après le dernier contact'],
-    ['Organiser les appels réservés','Nom, téléphone, email, créneau, sujet','Mesures précontractuelles à votre demande','3 ans après le dernier contact'],
+    ['Organiser les visios réservées','Nom, email, téléphone facultatif, créneau, sujet','Mesures précontractuelles à votre demande','3 ans après le dernier contact'],
     ['Gérer la relation client','Coordonnées, contrats, factures','Exécution du contrat et obligations légales','Durée du contrat, puis 10 ans pour les pièces comptables'],
     ['Prospection professionnelle','Coordonnées professionnelles','Intérêt légitime','3 ans après le dernier contact'],
     ['Mesure d’audience du site','Données de navigation, identifiants de cookies','Consentement','13 mois maximum']
@@ -1122,7 +1157,7 @@ function viewCookies(){
    (Supabase > Project Settings > API). Cette clé est faite pour
    être publique, les règles de sécurité (RLS) protègent les données.
    ========================================================= */
-const SUPABASE = { url: '', anonKey: '' };
+const SUPABASE = { url: 'https://fmzlcpyjjjmeialzkdua.supabase.co', anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtemxjcHlqamptZWlhbHprZHVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExMjIxODksImV4cCI6MjEwNjY5ODE4OX0.WUEF6vflbG7J4m7AT3XXJAvqgEBIHtbxRv5uy1dexfU' };
 let sb=null, sbUser=null, remoteArticles=[], remoteLoaded=false;
 function loadScript(src){return new Promise((res,rej)=>{const ex=document.querySelector(`script[src="${src}"]`);if(ex&&window.supabase)return res();const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
 async function getSb(){
@@ -1347,7 +1382,7 @@ function viewArticle(slug){
       <span class="eyebrow" style="color:${cat.c}">${svc.name}</span>
       <h3>Besoin d’aide sur ce sujet ?</h3>
       <p>Découvrez nos offres ${svc.name.toLowerCase()} à partir de ${fromPrice(svc).price} ${fromPrice(svc).unit}, ou parlons en 20 minutes.</p>
-      <div class="hero-ctas" style="margin-top:6px"><a class="btn sm" style="--c:${cat.c}" href="#${cat.svc}">Voir les offres</a><a class="btn sm ghost" href="#rdv">Réserver un appel</a></div>
+      <div class="hero-ctas" style="margin-top:6px"><a class="btn sm" style="--c:${cat.c}" href="#${cat.svc}">Voir les offres</a><a class="btn sm ghost" href="#rdv">Réserver une visio</a></div>
     </aside>
   </div></article>
   <section style="padding-top:0"><div class="wrap">
@@ -1575,8 +1610,19 @@ function setupContact(){
     $('#svcMsg').textContent=svc.length?'':'Choisissez au moins un service.';if(!svc.length)ok=false;
     $('#rgpdMsg').textContent=$('#c_rgpd').checked?'':'Merci de cocher la case pour que l’on puisse vous répondre.';if(!$('#c_rgpd').checked)ok=false;
     if(!ok){const first=form.querySelector('.err input,.err textarea');if(first)first.focus();toast('Quelques champs sont à corriger');return}
-    $('#okText').textContent=`Merci ${name.value.trim().split(' ')[0]}. Votre demande (${svc.map(s=>s.nextElementSibling.textContent).join(', ')}) est prise en compte. On revient vers vous sous 24 h ouvrées à ${email.value.trim()}.`;
-    $('#formBody').hidden=true;$('#formOk').hidden=false;confetti();
+    const svcTxt=svc.map(s=>s.nextElementSibling.textContent).join(', ');
+    const done=()=>{$('#okText').textContent=`Merci ${name.value.trim().split(' ')[0]}. Votre demande (${svcTxt}) est bien envoyée. On revient vers vous sous 24 h ouvrées à ${email.value.trim()}.`;
+      $('#formBody').hidden=true;$('#formOk').hidden=false;confetti()};
+    if(!CONTACT.email){done();return}
+    if($('#c_honey').value) return;
+    const btn=form.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Envoi en cours…';
+    fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CONTACT.email)}`,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({_subject:`Nouvelle demande Stratos Conseil : ${name.value.trim()}`,_template:'table',_replyto:email.value.trim(),
+        Nom:name.value.trim(),Entreprise:$('#c_company').value.trim(),Email:email.value.trim(),Téléphone:phone.value.trim(),
+        Services:svcTxt,Budget:$('#c_budget').value||'Non précisé',Démarrage:$('#c_when').value,Message:msg.value.trim()})})
+    .then(r=>r.json().then(j=>{if(!r.ok||String(j.success)==='false')throw new Error(j.message||'refus');done()}))
+    .catch(()=>{$('#rgpdMsg').textContent='L’envoi n’a pas abouti. Réessayez dans un instant, ou écrivez nous sur WhatsApp.';toast('Envoi impossible pour le moment')})
+    .finally(()=>{btn.disabled=false;btn.textContent='Envoyer ma demande'});
   });
   $('#again').addEventListener('click',()=>{form.reset();$('#formBody').hidden=false;$('#formOk').hidden=true});
   $$('.copy').forEach(b=>b.addEventListener('click',()=>{
@@ -1599,7 +1645,26 @@ function setupRdv(){
   const key=d=>`${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const closed=d=>d<today||d>maxDate||d.getDay()===0||d.getDay()===6||holidays.includes(key(d));
   const SLOTS=[];for(let h=9;h<18;h++){for(const m of [0,30]){if(h===9&&m===0)continue;if(h===12&&m===30)continue;if(h===13&&m===0)continue;SLOTS.push(`${h}:${m?'30':'00'}`)}}
-  const taken=(d,s)=>{let x=d.getDate()*31+d.getMonth()*7+parseInt(s)*13+(s.endsWith('30')?5:0);return (x*2654435761>>>0)%4===0};
+  /* créneaux réels via la fonction Supabase "booking" reliée à Google Agenda ; sinon mode démonstration */
+  const live=!!(SUPABASE.url&&SUPABASE.anonKey);
+  const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  let takenMap=null, availState=live?'loading':'demo';
+  const taken=(d,s)=>{
+    if(availState==='ok') return !!(takenMap[ymd(d)]||[]).includes(s);
+    if(live) return false;
+    let x=d.getDate()*31+d.getMonth()*7+parseInt(s)*13+(s.endsWith('30')?5:0);return (x*2654435761>>>0)%4===0};
+  async function callBooking(body){
+    const c=await getSb(); if(!c) throw new Error('supabase');
+    const {data,error}=await c.functions.invoke('booking',{body});
+    if(error){let msg='';try{msg=(await error.context.json()).error}catch(_){}throw Object.assign(new Error(msg||'booking'),{status:error.context&&error.context.status})}
+    return data;
+  }
+  async function fetchAvail(){
+    if(!live) return;
+    try{const d=await callBooking({action:'availability',from:ymd(today),to:ymd(maxDate)});takenMap=d.taken||{};availState='ok'}
+    catch(e){availState='error';console.warn('Disponibilités indisponibles',e)}
+    if(selDay) drawSlots();
+  }
 
   function drawCal(){
     $('#calTitle').textContent=fmtM.format(view);
@@ -1621,28 +1686,39 @@ function setupRdv(){
     $('#slotTitle').textContent=fmtD.format(selDay).replace(/^./,c=>c.toUpperCase());
     $('#slots').innerHTML=SLOTS.map(s=>{const [hh,mm]=s.split(':').map(Number);const past=isToday&&(hh*60+mm)<=now.getHours()*60+now.getMinutes()+60;
       const dis=past||taken(selDay,s);return `<button type="button" class="slot ${selSlot===s?'sel':''}" data-s="${s}" ${dis?'disabled':''} aria-label="${s.replace(':',' h ')}${dis?', indisponible':''}">${s.replace(':','h')}</button>`}).join('');
+    if(live&&availState==='loading'){$('#slots').innerHTML='<p class="small">Chargement des disponibilités…</p>';return}
     if(!$$('#slots .slot:not(:disabled)').length) $('#slots').innerHTML='<p class="small">Plus de créneau ce jour là, choisissez un autre jour.</p>';
     $$('#slots .slot:not(:disabled)').forEach(b=>b.addEventListener('click',()=>{selSlot=b.dataset.s;drawSlots();showForm()}));
   }
   function recapHTML(){const [h,m]=selSlot.split(':');const end=new Date(2000,0,1,+h,+m+20);
-    return `<span>Appel téléphonique de 20 minutes</span><span><b>${fmtD.format(selDay)}</b></span><span>de <b>${selSlot.replace(':','h')}</b> à <b>${end.getHours()}h${String(end.getMinutes()).padStart(2,'0')}</b>, heure de Paris</span>`}
+    return `<span>Visio Google Meet de 20 minutes</span><span><b>${fmtD.format(selDay)}</b></span><span>de <b>${selSlot.replace(':','h')}</b> à <b>${end.getHours()}h${String(end.getMinutes()).padStart(2,'0')}</b>, heure de Paris</span>`}
   function showForm(){$('#recap').innerHTML=recapHTML();$('#bookForm').hidden=false;setTimeout(()=>$('#b_name').focus({preventScroll:true}),50)}
   $('#prevM').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);drawCal()});
   $('#nextM').addEventListener('click',()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);drawCal()});
   $('#bookForm').addEventListener('submit',e=>{e.preventDefault();let ok=true;
     const n=$('#b_name'),p=$('#b_phone'),m=$('#b_email');
     if(n.value.trim().length<2){setErr(n,'Indiquez votre nom.');ok=false}else setErr(n,'');
-    if(!PHONE_RE.test(p.value.trim())){setErr(p,'Numéro attendu : 06 12 34 56 78.');ok=false}else setErr(p,'');
+    if(p.value.trim()&&!PHONE_RE.test(p.value.trim())){setErr(p,'Numéro attendu : 06 12 34 56 78.');ok=false}else setErr(p,'');
     if(!EMAIL_RE.test(m.value.trim())){setErr(m,'Email invalide, format nom@domaine.fr.');ok=false}else setErr(m,'');
     if(!ok){toast('Vérifiez vos coordonnées');return}
-    $('#okRecap').innerHTML=recapHTML()+`<span>On vous appelle au <b>${esc(p.value.trim())}</b></span><span>Sujet : ${esc($('#b_topic').value)}</span>`;
-    $('#bookStep1').hidden=true;$('#bookOk').hidden=false;confetti();
+    const success=link=>{$('#okRecap').innerHTML=recapHTML()+`<span>Invitation Google Meet envoyée à <b>${esc(m.value.trim())}</b></span>${link?`<span>Lien : <a href="${esc(link)}" target="_blank" rel="noopener" style="color:var(--yellow)">${esc(link.replace('https://',''))}</a></span>`:''}<span>Sujet : ${esc($('#b_topic').value)}</span>`;
+      $('#bookStep1').hidden=true;$('#bookOk').hidden=false;confetti()};
+    if(!live){success(null);return}
+    const btn=$('#bookForm button[type=submit]');btn.disabled=true;btn.textContent='Réservation en cours…';
+    callBooking({action:'book',date:ymd(selDay),time:selSlot,name:n.value.trim(),email:m.value.trim(),phone:p.value.trim(),topic:$('#b_topic').value})
+      .then(d=>{success(d&&d.meetLink);fetchAvail()})
+      .catch(err=>{
+        if(err.status===409){toast('Ce créneau vient d’être pris, choisissez en un autre');selSlot=null;availState='loading';drawSlots();fetchAvail();return}
+        toast('Réservation impossible pour le moment');
+        $('#recap').insertAdjacentHTML('afterend','<p class="small" style="color:var(--pink)">La réservation n’a pas abouti. Réessayez dans un instant, ou écrivez nous sur WhatsApp.</p>');
+      })
+      .finally(()=>{btn.disabled=false;btn.textContent='Confirmer la visio'});
   });
   $('#bookAgain').addEventListener('click',()=>{selSlot=null;$('#bookOk').hidden=true;$('#bookStep1').hidden=false;drawSlots()});
   // premier jour ouvré sélectionné pour montrer l’outil en état de marche
   let d=new Date(today);while(closed(d)&&d<=maxDate)d.setDate(d.getDate()+1);
   if(d<=maxDate){selDay=d;view=new Date(d.getFullYear(),d.getMonth(),1)}
-  drawCal();drawSlots();
+  drawCal();drawSlots();fetchAvail();
 }
 
 /* confettis néon */
@@ -1661,7 +1737,7 @@ $('#ddPanel').innerHTML=`<a href="#services"><span class="chip-dot" style="backg
   ORDER.map(k=>`<a href="#${k}"><span class="chip-dot" style="background:${SERVICES[k].c};color:${SERVICES[k].c}"></span><span><b>${SERVICES[k].name}</b><small>${SERVICES[k].card.split('.')[0].slice(0,52)}</small></span></a>`).join('');
 $('#footSvc').innerHTML=ORDER.map(k=>`<a href="#${k}">${SERVICES[k].name}</a>`).join('');
 const mob=$('#mobile');
-mob.insertAdjacentHTML('beforeend',`<a href="#accueil">Accueil</a><a href="#services">Services</a>${ORDER.map(k=>`<a class="sub" href="#${k}">${SERVICES[k].name}</a>`).join('')}<a href="#realisations">Réalisations</a><a href="#tarifs">Tarifs</a><a href="#blog">Blog</a><a href="#apropos">À propos</a><a href="#faq">FAQ</a><a href="#contact">Contact</a><a class="btn" href="#rdv" style="margin-top:14px;font-size:18px;align-self:flex-start">Réserver un appel</a>`);
+mob.insertAdjacentHTML('beforeend',`<a href="#accueil">Accueil</a><a href="#services">Services</a>${ORDER.map(k=>`<a class="sub" href="#${k}">${SERVICES[k].name}</a>`).join('')}<a href="#realisations">Réalisations</a><a href="#tarifs">Tarifs</a><a href="#blog">Blog</a><a href="#apropos">À propos</a><a href="#faq">FAQ</a><a href="#contact">Contact</a><a class="btn" href="#rdv" style="margin-top:14px;font-size:18px;align-self:flex-start">Réserver une visio</a>`);
 function closeMobile(){mob.hidden=true;document.body.style.overflow=''}
 $('#burger').addEventListener('click',()=>{mob.hidden=false;document.body.style.overflow='hidden'});
 $('#closeMobile').addEventListener('click',closeMobile);
@@ -1786,6 +1862,8 @@ $('#manageCookies').addEventListener('click',()=>{if(location.hash==='#cookies')
 $('#year').textContent=new Date().getFullYear();
 if(!readConsent()&&!window.__consent) $('#cookie').hidden=false;
 
+$('#footSocial').innerHTML=socialBtns();
+$('#dock').innerHTML=`<a class="dock-btn wa" href="${waLink()}" target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp">${WA_ICO}</a><a class="dock-btn ig" href="${igLink()}" target="_blank" rel="noopener" aria-label="Notre Instagram">${IG_ICO}</a>`;
 $('#adminBtn').addEventListener('click',openAdmin);
 $('#abNew').addEventListener('click',()=>editor());
 $('#abOpen').addEventListener('click',adminPanel);
