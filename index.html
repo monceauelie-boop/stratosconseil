@@ -287,6 +287,7 @@ p.lead{font-size:clamp(17px,1.6vw,21px);color:var(--ink2);max-width:62ch;font-we
 .day.blank{visibility:hidden}
 .slots-box{display:grid;gap:14px}
 .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.slot-group{grid-column:1/-1;font:500 12px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-top:6px}
 .slot{padding:11px 6px;border-radius:12px;border:2px solid var(--line);background:#fff;font:700 14px var(--f-mono);cursor:pointer;color:var(--ink);transition:.15s}
 .slot:hover:not(:disabled){border-color:var(--cyan);box-shadow:0 0 12px rgba(0,194,240,.35)}
 .slot:disabled{text-decoration:line-through;opacity:.4;cursor:not-allowed}
@@ -1745,7 +1746,8 @@ function setupRdv(){
   const holidays=['01-01','05-01','05-08','07-14','08-15','11-01','11-11','12-25'];
   const key=d=>`${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const closed=d=>d<today||d>maxDate; /* ouvert tous les jours, week end et jours fériés compris */
-  const SLOTS=[];for(let h=9;h<18;h++){for(const m of [0,30]){if(h===9&&m===0)continue;if(h===12&&m===30)continue;if(h===13&&m===0)continue;SLOTS.push(`${h}:${m?'30':'00'}`)}}
+  /* créneaux de 20 minutes, de 8h00 à 23h20 (dernière visio terminée à 23h40) */
+  const SLOTS=[];for(let t=8*60;t<=23*60+20;t+=20)SLOTS.push(`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`);
   /* créneaux réels via la fonction Supabase "booking" reliée à Google Agenda ; sinon mode démonstration */
   const live=!!(SUPABASE.url&&SUPABASE.anonKey);
   const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1785,8 +1787,10 @@ function setupRdv(){
     if(!selDay){$('#slots').innerHTML='';return}
     const isToday=+selDay===+today;
     $('#slotTitle').textContent=fmtD.format(selDay).replace(/^./,c=>c.toUpperCase());
-    $('#slots').innerHTML=SLOTS.map(s=>{const [hh,mm]=s.split(':').map(Number);const past=isToday&&(hh*60+mm)<=now.getHours()*60+now.getMinutes()+60;
-      const dis=past||taken(selDay,s);return `<button type="button" class="slot ${selSlot===s?'sel':''}" data-s="${s}" ${dis?'disabled':''} aria-label="${s.replace(':',' h ')}${dis?', indisponible':''}">${s.replace(':','h')}</button>`}).join('');
+    const btn=s=>{const [hh,mm]=s.split(':').map(Number);const past=isToday&&(hh*60+mm)<=now.getHours()*60+now.getMinutes()+60;
+      const dis=past||taken(selDay,s);return `<button type="button" class="slot ${selSlot===s?'sel':''}" data-s="${s}" ${dis?'disabled':''} aria-label="${s.replace(':',' h ')}${dis?', indisponible':''}">${s.replace(':','h')}</button>`};
+    const groups=[['Matin',0,12],['Après midi',12,18],['Soir',18,24]];
+    $('#slots').innerHTML=groups.map(([lbl,a,b])=>{const list=SLOTS.filter(s=>{const h=parseInt(s);return h>=a&&h<b});return `<span class="slot-group">${lbl}</span>${list.map(btn).join('')}`}).join('');
     if(live&&availState==='loading'){$('#slots').innerHTML='<p class="small">Chargement des disponibilités…</p>';return}
     if(!$$('#slots .slot:not(:disabled)').length) $('#slots').innerHTML='<p class="small">Plus de créneau ce jour là, choisissez un autre jour.</p>';
     $$('#slots .slot:not(:disabled)').forEach(b=>b.addEventListener('click',()=>{selSlot=b.dataset.s;drawSlots();showForm()}));
